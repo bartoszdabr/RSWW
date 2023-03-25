@@ -138,13 +138,19 @@ def extract_offers_from_subpage(resp: Response, home_page: str) -> List[TripInfo
     return offers
 
 
+def get_subpage_name(subpage: str) -> str:
+    """Extract subpage name from uri."""
+    return subpage.split('/')[1]
+
+
 def get_trip_offers(home_page: str, subpages: List[str]) -> Dict[str, List[TripInfo]]:
     """Prepare trip offers by calling provided urls."""
     trip_offers = {}
     for subpage in subpages:
         url = urllib.parse.urljoin(home_page, subpage)
         resp = call_url(url)
-        trip_offers[subpage] = extract_offers_from_subpage(resp, home_page)
+        subpage_name = get_subpage_name(subpage)
+        trip_offers[subpage_name] = extract_offers_from_subpage(resp, home_page)
 
     return trip_offers
 
