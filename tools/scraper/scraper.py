@@ -1,3 +1,4 @@
+import dataclasses
 import logging
 import json
 import os.path
@@ -153,7 +154,7 @@ def save_data(trip_offers: Dict[str, List[TripInfo]]) -> None:
     save_directory = DESTINATION_DIRECTORY
     json_file_name = DESTINATION_FILE_NAME
     with open(os.path.join(save_directory, json_file_name), 'w') as f:
-        json.dump(trip_offers, f)
+        json.dump(trip_offers, f, default=lambda o: dataclasses.asdict(o))
 
 
 def web_scrap() -> None:
