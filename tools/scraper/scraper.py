@@ -1,23 +1,23 @@
 import dataclasses
+import itertools
 import logging
 import json
 import os.path
 import random
+import time
 import urllib
 import re
-from pathlib import Path
-
 import requests
-import time
-from http import HTTPStatus
 
+from pathlib import Path
+from http import HTTPStatus
 from typing import List, Dict, Tuple, Optional
 
 from bs4 import BeautifulSoup, Tag
 from requests import Response
 from retrying import retry
 
-from trip_model import TripInfo
+from trip_model import TripInfo, FlightInfo, ScrapData
 
 log = logging.getLogger()
 
@@ -107,6 +107,11 @@ def get_description(content: BeautifulSoup) -> Dict[str, str]:
     return trip_description
 
 
+def get_start_location(content: BeautifulSoup) -> str:
+    """Extract start location."""
+    return content.find('a', class_='dropdown-toggle btn', attrs={'data-js-value': 'departure-selected'}).text.strip()
+
+
 def extract_offer(offer_url: str) -> Optional[TripInfo]:
     """Call offer url and prepare dataclass"""
     try:
@@ -117,6 +122,7 @@ def extract_offer(offer_url: str) -> Optional[TripInfo]:
             start_date=start_date,
             end_date=end_date,
             cost=get_cost(content),
+            start_location=get_start_location(content),
             destination=get_destination(content),
             description=get_description(content),
             tags=get_tags(content),
@@ -155,19 +161,36 @@ def get_trip_offers(home_page: str, subpages: List[str]) -> Dict[str, List[TripI
     return trip_offers
 
 
-def save_data(trip_offers: Dict[str, List[TripInfo]]) -> None:
+def save_data(trip_offers: ScrapData) -> None:
     """Save scrapper offers to json file"""
     save_directory = DESTINATION_DIRECTORY
     json_file_name = DESTINATION_FILE_NAME
-    with open(os.path.join(save_directory, json_file_name), 'w') as f:
-        json.dump(trip_offers, f, default=lambda o: dataclasses.asdict(o))
+    save_path = os.path.join(save_directory, json_file_name)
+    with open(save_path, 'w') as f:
+        json.dump(trip_offers, f, default=lambda o: dataclasses.asdict(o), indent=4)
+    log.info('Data saved to %s.', save_path)
 
 
-def web_scrap() -> None:
-    """Start crawling website."""
+def generate_flights(trip_offers: Dict[str, List[TripInfo]]) -> List[FlightInfo]:
+    """Generate flights data from scrapped trips."""
+    return [FlightInfo(start_location=trip.start_location, end_location=trip.destination.split('/')[0],
+                       departure=trip.start_date, seats=random.randint(0, 200))
+            for trip in list(itertools.chain(*trip_offers.values()))]
+
+
+def get_scrap_data() -> ScrapData:
+    """Prepare and return scrap dataclass."""
     start_time = time.time()
     trip_offers = get_trip_offers(ROOT_URL, SUBPAGES)
     end_time = time.time() - start_time
     log.info('Ended scrapping website %s', ROOT_URL)
-    log.info('Scrapping took %f ms', end_time)
-    save_data(trip_offers)
+    log.info('Scrapping took %f s', end_time)
+    flights = generate_flights(trip_offers)
+    log.info('Generated flights data.')
+    return ScrapData(flights=flights, trip_offers=trip_offers)
+
+
+def web_scrap() -> None:
+    """Start crawling website."""
+    data = get_scrap_data()
+    save_data(data)
