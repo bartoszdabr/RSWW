@@ -17,6 +17,9 @@ public class QueuesInitializer {
     @Value("${rabbitmq.payment.queueName}")
     private String paymentQueueName;
 
+    @Value("${rabbitmq.event.queueName}")
+    private String eventQueueName;
+
     private final AmqpAdmin amqpAdmin;
 
     public QueuesInitializer(AmqpAdmin amqpAdmin) {
@@ -29,5 +32,6 @@ public class QueuesInitializer {
         amqpAdmin.declareQueue(new Queue(transportQueueName, isDurable));
         amqpAdmin.declareQueue(new Queue(hotelQueueName, isDurable));
         amqpAdmin.declareQueue(new Queue(paymentQueueName, isDurable));
+        amqpAdmin.declareQueue(new Queue(eventQueueName, isDurable));
     }
 }
