@@ -1,4 +1,4 @@
-package rsww.reservationservice.messaging;
+package reservation.reservationwriteservice.messaging;
 
 import jakarta.annotation.PostConstruct;
 import org.springframework.amqp.core.AmqpAdmin;

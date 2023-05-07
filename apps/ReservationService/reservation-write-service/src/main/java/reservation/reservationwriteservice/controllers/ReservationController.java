@@ -1,4 +1,4 @@
-package rsww.reservationservice.controllers;
+package reservation.reservationwriteservice.controllers;
 
 import org.springframework.web.bind.annotation.RestController;
 

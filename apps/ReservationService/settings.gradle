@@ -1,1 +1,4 @@
 rootProject.name = 'ReservationService'
+include 'reservation-common'
+include 'reservation-write-service'
+include 'reservation-read-service'
