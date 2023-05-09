@@ -10,8 +10,8 @@ import java.time.LocalDate;
 @SuperBuilder
 @NoArgsConstructor
 public class CreateTransportEvent extends BaseEvent {
-    private String destinationPlace;
-    private String sourcePlace;
-    private LocalDate date;
-    private Integer availableSeats;
+  private String destinationPlace;
+  private String sourcePlace;
+  private LocalDate date;
+  private Integer availableSeats;
 }

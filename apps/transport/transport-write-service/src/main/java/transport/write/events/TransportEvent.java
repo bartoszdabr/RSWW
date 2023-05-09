@@ -15,10 +15,11 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TransportEvent {
-    @Id
-    private String id;
-    @Enumerated(EnumType.STRING)
-    private TransportEventType type;
-    private String transportId;
-    private String eventJson;
+  @Id private String id;
+
+  @Enumerated(EnumType.STRING)
+  private TransportEventType type;
+
+  private String transportId;
+  private String eventJson;
 }

@@ -8,6 +8,6 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @SuperBuilder
 public class AddReservationEvent extends BaseEvent {
-    private String userName;
-    private int numberOfPeople;
+  private String userName;
+  private int numberOfPeople;
 }

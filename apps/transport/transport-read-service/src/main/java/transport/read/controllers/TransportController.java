@@ -18,6 +18,7 @@ public class TransportController {
   public TransportController(TransportService transportService) {
     this.transportService = transportService;
   }
+
   @GetMapping("hello")
   public ResponseEntity<String> hello() {
     return ResponseEntity.ok("hello");

@@ -1,6 +1,5 @@
 package transport.read.entity;
 
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
@@ -18,18 +17,17 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Transport {
-    @Id
-    private String id;
-    private String destinationPlace;
-    private String sourcePlace;
-    private LocalDate date;
-    private Integer availableSeats;
+  @Id private String id;
+  private String destinationPlace;
+  private String sourcePlace;
+  private LocalDate date;
+  private Integer availableSeats;
 
-    public void handle(CancelReservationEvent event) {
-        this.availableSeats += event.getNumberOfPeople();
-    }
+  public void handle(CancelReservationEvent event) {
+    this.availableSeats += event.getNumberOfPeople();
+  }
 
-    public void handle(AddReservationEvent event) {
-        this.availableSeats -= event.getNumberOfPeople();
-    }
+  public void handle(AddReservationEvent event) {
+    this.availableSeats -= event.getNumberOfPeople();
+  }
 }

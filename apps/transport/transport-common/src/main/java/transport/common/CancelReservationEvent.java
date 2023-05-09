@@ -8,6 +8,6 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @NoArgsConstructor
 public class CancelReservationEvent extends BaseEvent {
-    private int numberOfPeople;
-    private String userName;
+  private int numberOfPeople;
+  private String userName;
 }

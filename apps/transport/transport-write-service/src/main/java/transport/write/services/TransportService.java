@@ -66,7 +66,8 @@ public class TransportService {
     List<TransportEvent> transportEvents =
         eventRepository.findByTransportId(event.getTransportId());
     if (transportEvents.isEmpty()) {
-      throw new IllegalArgumentException("An attempt to cancel reservation on non existing transport");
+      throw new IllegalArgumentException(
+          "An attempt to cancel reservation on non existing transport");
     }
 
     TransportEvent newTransportEvent = getTransportEvent(TransportEventType.CANCEL, event);
@@ -75,18 +76,17 @@ public class TransportService {
     messageService.sendEvent(event);
   }
 
-  private TransportEvent getTransportEvent(TransportEventType type, BaseEvent event)
-      {
-        try {
-          return TransportEvent.builder()
-              .id(UUID.randomUUID().toString())
-              .type(type)
-              .transportId(event.getTransportId())
-              .eventJson(objectMapper.writeValueAsString(event))
-              .build();
-        } catch (JsonProcessingException e) {
-          log.error("An error occurred during event serialization");
-          throw new RuntimeException(e);
-        }
-      }
+  private TransportEvent getTransportEvent(TransportEventType type, BaseEvent event) {
+    try {
+      return TransportEvent.builder()
+          .id(UUID.randomUUID().toString())
+          .type(type)
+          .transportId(event.getTransportId())
+          .eventJson(objectMapper.writeValueAsString(event))
+          .build();
+    } catch (JsonProcessingException e) {
+      log.error("An error occurred during event serialization");
+      throw new RuntimeException(e);
+    }
+  }
 }

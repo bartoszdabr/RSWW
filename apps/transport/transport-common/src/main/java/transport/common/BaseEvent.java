@@ -11,7 +11,7 @@ import java.time.Instant;
 @NoArgsConstructor
 @SuperBuilder
 public abstract class BaseEvent implements Serializable {
-    private String eventId;
-    private Instant timeStamp;
-    private String transportId;
+  private String eventId;
+  private Instant timeStamp;
+  private String transportId;
 }

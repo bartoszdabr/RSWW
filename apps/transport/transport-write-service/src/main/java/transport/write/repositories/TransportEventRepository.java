@@ -9,5 +9,5 @@ import java.util.UUID;
 
 @Repository
 public interface TransportEventRepository extends JpaRepository<TransportEvent, UUID> {
-    List<TransportEvent> findByTransportId(String transportId);
+  List<TransportEvent> findByTransportId(String transportId);
 }

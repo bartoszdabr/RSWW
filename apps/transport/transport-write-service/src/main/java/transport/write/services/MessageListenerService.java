@@ -26,13 +26,13 @@ public class MessageListenerService {
   public void receivedMessage(String message) {
     log.info("Received new message: %s".formatted(message));
     try {
-    JsonNode jsonNode = objectMapper.readTree(message);
-    MessageType type = getMessageType(message);
+      JsonNode jsonNode = objectMapper.readTree(message);
+      MessageType type = getMessageType(message);
 
-    switch (type) {
-      case ADD -> handleAddReservationMessage(jsonNode);
-      case CANCEL -> handleCancelReservationMessage(jsonNode);
-    }
+      switch (type) {
+        case ADD -> handleAddReservationMessage(jsonNode);
+        case CANCEL -> handleCancelReservationMessage(jsonNode);
+      }
     } catch (JsonProcessingException e) {
       log.error("Error occurred while reading/converting message: ", e);
     }
