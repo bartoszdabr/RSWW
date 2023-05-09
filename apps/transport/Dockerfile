@@ -5,7 +5,7 @@ COPY . .
 
 RUN mvn clean package
 
-FROM amazoncorretto:17.0.7 AS transport-read_service-img
+FROM amazoncorretto:17.0.7 AS transport-read-service-img
 WORKDIR /app
 COPY --from=build /app/transport-read-service/target/transport-read-service-0.0.1.jar app.jar
 CMD ["java", "-jar", "app.jar"]
