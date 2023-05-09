@@ -7,5 +7,5 @@ import lombok.Data;
 @Builder
 public class ResponseMessage {
   private String id;
-  private String status;
+  private ResponseMessageStatus status;
 }

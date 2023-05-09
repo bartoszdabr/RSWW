@@ -1,4 +1,4 @@
-package transport.write.messaging;
+package transport.read.messaging;
 
 import jakarta.annotation.PostConstruct;
 import org.springframework.amqp.core.AmqpAdmin;
@@ -11,12 +11,6 @@ public class QueuesInitializer {
   @Value("${rabbitmq.event.queueName}")
   private String eventQueueName;
 
-  @Value("${rabbitmq.reservation.queueName}")
-  private String reservationQueueName;
-
-  @Value("${rabbitmq.transport.queueName}")
-  private String transportQueueName;
-
   private final AmqpAdmin amqpAdmin;
 
   public QueuesInitializer(AmqpAdmin amqpAdmin) {
@@ -27,7 +21,5 @@ public class QueuesInitializer {
   public void createQueues() {
     boolean isDurable = true;
     amqpAdmin.declareQueue(new Queue(eventQueueName, isDurable));
-    amqpAdmin.declareQueue(new Queue(reservationQueueName, isDurable));
-    amqpAdmin.declareQueue(new Queue(transportQueueName, isDurable));
   }
 }

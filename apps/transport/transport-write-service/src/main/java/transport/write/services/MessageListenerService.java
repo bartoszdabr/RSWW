@@ -12,6 +12,7 @@ import transport.write.commands.AddReservationCommand;
 import transport.write.commands.CancelReservationCommand;
 import transport.write.messaging.MessageType;
 import transport.write.messaging.ResponseMessage;
+import transport.write.messaging.ResponseMessageStatus;
 
 @Component
 @AllArgsConstructor
@@ -46,12 +47,15 @@ public class MessageListenerService {
   private void handleAddReservationMessage(JsonNode jsonNode) throws JsonProcessingException {
     AddReservationCommand command = objectMapper.treeToValue(jsonNode, AddReservationCommand.class);
     ResponseMessage response =
-        ResponseMessage.builder().id(command.getId()).status("succeeded").build();
+        ResponseMessage.builder()
+            .id(command.getId())
+            .status(ResponseMessageStatus.SUCCEEDED)
+            .build();
     try {
       transportService.makeReservation(command);
     } catch (Exception e) {
       log.error(e);
-      response.setStatus("failure");
+      response.setStatus(ResponseMessageStatus.FAILURE);
     } finally {
       messageService.sendResponse(objectMapper.writeValueAsString(response));
     }
