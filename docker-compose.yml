@@ -1,4 +1,4 @@
-version: '3.3'
+version: '3.4'
 
 services:
   mongo:
@@ -31,6 +31,52 @@ services:
     ports:
       - "5672:5672"
       - "15672:15672"
+    networks:
+      - net
+
+  transport_read:
+    build:
+      context: ./apps/transport
+      dockerfile: Dockerfile
+      target: transport-read-service-img
+    container_name: 'rsww_transport_read'
+    restart: always
+    ports:
+      - "9010:8080"
+    environment:
+      - SERVER_PORT=8080
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/transport_read_db?createDatabaseIfNotExist=true
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=root
+      - SPRING_RABBITMQ_HOST=rabbitmq
+      - SPRING_RABBITMQ_PORT=5672
+      - SPRING_RABBITMQ_USERNAME=guest
+      - SPRING_RABBITMQ_PASSWORD=guest
+      - SPRING_FLYWAY_USER=root
+      - SPRING_FLYWAY_PASSWORD=root
+    networks:
+      - net
+
+  transport_write:
+    build:
+      context: ./apps/transport
+      dockerfile: Dockerfile
+      target: transport-write-service-img
+    container_name: 'rsww_transport_write'
+    restart: always
+    ports:
+      - "9011:8080"
+    environment:
+      - SERVER_PORT=8080
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/transport_write_db?createDatabaseIfNotExist=true
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=root
+      - SPRING_RABBITMQ_HOST=rabbitmq
+      - SPRING_RABBITMQ_PORT=5672
+      - SPRING_RABBITMQ_USERNAME=guest
+      - SPRING_RABBITMQ_PASSWORD=guest
+      - SPRING_FLYWAY_USER=root
+      - SPRING_FLYWAY_PASSWORD=root
     networks:
       - net
 
