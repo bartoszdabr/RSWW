@@ -7,8 +7,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import transport.common.TransportEventType;
 
-import java.util.UUID;
-
 @Entity
 @Data
 @Builder

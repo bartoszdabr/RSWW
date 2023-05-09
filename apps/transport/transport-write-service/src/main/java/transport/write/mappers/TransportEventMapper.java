@@ -17,7 +17,6 @@ public class TransportEventMapper {
     this.objectMapper = objectMapper;
   }
 
-  AddReservationEvent e = new AddReservationEvent();
   // TODO: Refactor this
   public Transport map(List<TransportEvent> transportEvents) throws JsonProcessingException {
     Transport transport = new Transport();

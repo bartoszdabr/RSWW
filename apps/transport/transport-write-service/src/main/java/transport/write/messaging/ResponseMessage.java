@@ -1,6 +1,5 @@
 package transport.write.messaging;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 
