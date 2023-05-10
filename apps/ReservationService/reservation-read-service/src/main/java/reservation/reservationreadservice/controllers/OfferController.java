@@ -24,7 +24,7 @@ public class OfferController {
         this.offerService = offerService;
     }
 
-    @GetMapping("reservations")
+    @GetMapping("offers")
     public ResponseEntity<List<HotelOfferModel>> getOffers(
             @RequestParam Optional<String> startLocation,
             @RequestParam Optional<String> destinationLocation,
