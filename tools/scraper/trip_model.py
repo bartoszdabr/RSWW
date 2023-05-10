@@ -15,6 +15,7 @@ class TripInfo:
     opinion_score: float
     stars: float
     images: List[str]
+    hotel_name: str
 
 
 @dataclass
