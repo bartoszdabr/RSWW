@@ -6,7 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import reservation.reservationreadservice.models.HotelModel;
+import reservation.reservationreadservice.models.HotelOfferModel;
 import reservation.reservationreadservice.services.OfferService;
 
 import java.time.LocalDate;
@@ -25,7 +25,7 @@ public class OfferController {
     }
 
     @GetMapping("reservations")
-    public ResponseEntity<List<HotelModel>> getOffers(
+    public ResponseEntity<List<HotelOfferModel>> getOffers(
             @RequestParam Optional<String> startLocation,
             @RequestParam Optional<String> destinationLocation,
             @RequestParam Optional<LocalDate> startDate,

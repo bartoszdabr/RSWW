@@ -9,5 +9,5 @@ import java.util.List;
 @Getter
 public class HotelResponseModel {
 
-    private final List<HotelModel> availableHotels;
+    private final List<HotelOfferModel> availableHotels;
 }

@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.util.UriComponentsBuilder;
-import reservation.reservationreadservice.models.HotelModel;
+import reservation.reservationreadservice.models.HotelOfferModel;
 import reservation.reservationreadservice.models.TransportResponseModel;
 
 import java.util.Optional;
@@ -31,13 +31,13 @@ public class TransportRepositoryImpl implements TransportRepository {
     @Override
     public Optional<TransportResponseModel> findAvailableTransports(Optional<String> startLocation,
                                                                     Optional<String> destinationLocation,
-                                                                    HotelModel hotelModel) {
+                                                                    HotelOfferModel hotelOfferModel) {
         var uri = UriComponentsBuilder
                 .fromHttpUrl(transportServiceBaseApiUrl)
                 .path(transportServiceTransportsEndpoint)
-                .queryParam("startDate", hotelModel.getStartDate())
-                .queryParam("endDate", hotelModel.getEndDate())
-                .queryParam("numOPfPeople", hotelModel.getNumOfPeople())
+                .queryParam("startDate", hotelOfferModel.getStartDate())
+                .queryParam("endDate", hotelOfferModel.getEndDate())
+                .queryParam("numOPfPeople", hotelOfferModel.getNumOfPeople())
                 .queryParam("startLocation", startLocation)
                 .queryParam("destinationLocation", destinationLocation)
                 .build().toUri();

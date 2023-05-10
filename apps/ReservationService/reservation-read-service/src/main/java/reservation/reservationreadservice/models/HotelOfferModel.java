@@ -10,7 +10,7 @@ import java.util.List;
 @Builder
 @Getter
 @Setter
-public class HotelModel {
+public class HotelOfferModel {
 
     private final String hotelId;
 

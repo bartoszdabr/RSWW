@@ -19,6 +19,4 @@ public class TransportModel {
 
     private final LocalDateTime endTime;
 
-    private final Integer seats;
-
 }

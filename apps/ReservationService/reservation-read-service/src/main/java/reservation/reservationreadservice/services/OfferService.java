@@ -4,7 +4,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-import reservation.reservationreadservice.models.HotelModel;
+import reservation.reservationreadservice.models.HotelOfferModel;
 import reservation.reservationreadservice.models.TransportModel;
 import reservation.reservationreadservice.repositories.HotelRepository;
 import reservation.reservationreadservice.repositories.TransportRepository;
@@ -30,11 +30,11 @@ public class OfferService {
         this.transportRepository = transportRepository;
     }
 
-    public List<HotelModel> findOffers(Optional<String> startLocation,
-                                       Optional<String> destinationLocation,
-                                       Optional<LocalDate> startDate,
-                                       Optional<LocalDate> endDate,
-                                       Optional<Integer> numOfPeople) {
+    public List<HotelOfferModel> findOffers(Optional<String> startLocation,
+                                            Optional<String> destinationLocation,
+                                            Optional<LocalDate> startDate,
+                                            Optional<LocalDate> endDate,
+                                            Optional<Integer> numOfPeople) {
         var availableHotels = getHotels(startDate, endDate, numOfPeople);
         availableHotels
                 .forEach(hotelOffer -> {
@@ -47,12 +47,12 @@ public class OfferService {
         return availableHotels;
     }
 
-    private Double calculateOfferCost(HotelModel hotelOffer) {
+    private Double calculateOfferCost(HotelOfferModel hotelOffer) {
         // TODO: Dodaj algorytm liczenia kosztu wycieczki
         return null;
     }
 
-    private List<TransportModel> findMatchingTransport(Optional<String> startLocation, Optional<String> destinationLocation, HotelModel hotel) {
+    private List<TransportModel> findMatchingTransport(Optional<String> startLocation, Optional<String> destinationLocation, HotelOfferModel hotel) {
         var matchingTransportsFromApi = transportRepository.findAvailableTransports(
                 startLocation, destinationLocation, hotel);
 
@@ -61,7 +61,7 @@ public class OfferService {
                 : Collections.emptyList();
     }
 
-    private List<HotelModel> getHotels(Optional<LocalDate> startDate, Optional<LocalDate> endDate, Optional<Integer> numOfPeople) {
+    private List<HotelOfferModel> getHotels(Optional<LocalDate> startDate, Optional<LocalDate> endDate, Optional<Integer> numOfPeople) {
         var hotelsOptional = hotelRepository.findHotels(startDate, endDate, numOfPeople);
         if (hotelsOptional.isEmpty()) {
             log.info("Couldn't find matching hotels.");
