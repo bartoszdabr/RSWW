@@ -5,7 +5,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
 import reservation.AddReservationEvent;
 import reservation.RemoveReservationEvent;
-import reservation.reservationreadservice.models.ReservationModel;
+import reservation.reservationreadservice.entities.ReservationEntity;
 import reservation.reservationreadservice.repositories.ReservationRepository;
 
 @Service
@@ -20,7 +20,7 @@ public class EventHandlerService {
     }
 
     public void handleAddReservationEvent(AddReservationEvent addReservationEvent) {
-        var reservationEntity = ReservationModel.builder()
+        var reservationEntity = ReservationEntity.builder()
                 .id(addReservationEvent.getEventId())
                 .username(addReservationEvent.getUsername())
                 .transportId(addReservationEvent.getTransportId())
@@ -40,8 +40,8 @@ public class EventHandlerService {
 
     }
 
-    private void saveReservationToNoSql(ReservationModel reservationModel) {
-        reservationRepository.insert(reservationModel);
-        log.info("Reservation id: " + reservationModel.getId() + " inserted to db");
+    private void saveReservationToNoSql(ReservationEntity reservationEntity) {
+        reservationRepository.insert(reservationEntity);
+        log.info("Reservation id: " + reservationEntity.getId() + " inserted to db");
     }
 }

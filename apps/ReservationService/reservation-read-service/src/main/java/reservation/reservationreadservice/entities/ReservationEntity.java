@@ -1,4 +1,4 @@
-package reservation.reservationreadservice.models;
+package reservation.reservationreadservice.entities;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -8,12 +8,11 @@ import reservation.AgeRange;
 
 import java.time.Instant;
 import java.util.HashMap;
-import java.util.UUID;
 
 @Builder
 @Getter
 @Document("reservations")
-public class ReservationModel {
+public class ReservationEntity {
 
     @MongoId
     private String id;
