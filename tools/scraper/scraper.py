@@ -23,12 +23,12 @@ log = logging.getLogger()
 
 ROOT_URL = 'https://itaka.pl'
 SUBPAGES = [
-    '/all-inclusive/?view=offerList&package-type=wczasy&adults=2&date-from=2023-03-25&food=allInclusive&order=popular&total-price=0&currency=PLN&page=20',
-    '/last-minute/?view=offerList&package-type=wczasy&adults=2&date-from=2023-03-25&promo=lastMinute&order=popular&total-price=0&transport=flight&currency=PLN&page=20'
+    '/all-inclusive/?view=offerList&package-type=wczasy&adults=2&date-from=2023-05-25&food=allInclusive&order=popular&total-price=0&currency=PLN&page=20',
+    '/last-minute/?view=offerList&package-type=wczasy&adults=2&date-from=2023-05-25&promo=lastMinute&order=popular&total-price=0&transport=flight&currency=PLN&page=20'
 ]
 SCRAPER_PARSER = 'html.parser'
 DESTINATION_DIRECTORY = os.getenv('DESTINATION_DIRECTORY', str(Path.home()))
-DESTINATION_FILE_NAME = os.getenv('DESTINATION_FILE_NAME', 'data.json')
+DESTINATION_FILE_NAME = os.getenv('DESTINATION_FILE_NAME', 'data_with_names.json')
 
 dates_regex = re.compile(r'[0-9]{2}\.[0-9]{2}')
 
@@ -112,6 +112,11 @@ def get_start_location(content: BeautifulSoup) -> str:
     return content.find('a', class_='dropdown-toggle btn', attrs={'data-js-value': 'departure-selected'}).text.strip()
 
 
+def get_hotel_name(content: BeautifulSoup) -> str:
+    """Extract hotel name."""
+    return content.find('span', class_='productName-holder').find('h1').text
+
+
 def extract_offer(offer_url: str) -> Optional[TripInfo]:
     """Call offer url and prepare dataclass"""
     try:
@@ -128,7 +133,8 @@ def extract_offer(offer_url: str) -> Optional[TripInfo]:
             tags=get_tags(content),
             opinion_score=get_score(content),
             stars=get_stars(content),
-            images=get_images(content)
+            images=get_images(content),
+            hotel_name=get_hotel_name(content)
         )
     except Exception:
         return None
