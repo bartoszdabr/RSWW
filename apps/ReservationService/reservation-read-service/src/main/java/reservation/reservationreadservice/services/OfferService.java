@@ -36,9 +36,20 @@ public class OfferService {
                                        Optional<LocalDate> endDate,
                                        Optional<Integer> numOfPeople) {
         var availableHotels = getHotels(startDate, endDate, numOfPeople);
-        availableHotels.forEach(hotel -> hotel.setTransports(findMatchingTransport(startLocation, destinationLocation, hotel)));
+        availableHotels
+                .forEach(hotelOffer -> {
+                            hotelOffer.setTransports(findMatchingTransport(startLocation,
+                                    destinationLocation, hotelOffer));
+                            hotelOffer.setCost(calculateOfferCost(hotelOffer));
+                        }
+                );
 
         return availableHotels;
+    }
+
+    private Double calculateOfferCost(HotelModel hotelOffer) {
+        // TODO: Dodaj algorytm liczenia kosztu wycieczki
+        return null;
     }
 
     private List<TransportModel> findMatchingTransport(Optional<String> startLocation, Optional<String> destinationLocation, HotelModel hotel) {

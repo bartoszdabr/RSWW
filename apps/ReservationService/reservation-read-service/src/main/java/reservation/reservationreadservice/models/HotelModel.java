@@ -29,4 +29,6 @@ public class HotelModel {
     private final Integer numOfPeople;
 
     private List<TransportModel> transports;
+
+    private Double cost;
 }
