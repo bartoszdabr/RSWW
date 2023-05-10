@@ -32,8 +32,9 @@ public class OfferController {
             @RequestParam Optional<LocalDate> endDate,
             @RequestParam Optional<Integer> numOfPeople
     ) {
-        log.info("New find reservations request");
+        log.info("New find offers request");
         var offers = offerService.findOffers(startLocation, destinationLocation, startDate, endDate, numOfPeople);
+        log.info("Finished processing find offers request. Found " + offers.size() + " offers.");
 
 
         return ResponseEntity.ok(offers);

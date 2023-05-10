@@ -29,5 +29,6 @@ public class EventListenerService {
         } else if (baseEvent instanceof RemoveReservationEvent) {
             eventHandlerService.handleRemoveReservationEvent((RemoveReservationEvent) baseEvent);
         }
+        log.info("Finished handling event id: " + baseEvent.getEventId());
     }
 }

@@ -20,6 +20,7 @@ public class EventHandlerService {
     }
 
     public void handleAddReservationEvent(AddReservationEvent addReservationEvent) {
+        log.info("New add reservation event.");
         var reservationEntity = ReservationEntity.builder()
                 .id(addReservationEvent.getEventId())
                 .username(addReservationEvent.getUsername())
@@ -31,6 +32,7 @@ public class EventHandlerService {
                 .build();
 
         saveReservationToNoSql(reservationEntity);
+        log.info("Finished handling new add reservation event.");
 
     }
 
