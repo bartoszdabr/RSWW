@@ -79,6 +79,23 @@ services:
       - SPRING_FLYWAY_PASSWORD=root
     networks:
       - net
+      
+  payment-read:
+    build:
+      context: ./apps/PaymentService
+      dockerfile: Dockerfile
+    container_name: 'rsww_payment'
+    restart: always
+    ports:
+      - "9012:8080"
+    environment:
+      - SERVER_PORT=8080
+      - SPRING_RABBITMQ_HOST=rabbitmq
+      - SPRING_RABBITMQ_PORT=5672
+      - SPRING_RABBITMQ_USERNAME=guest
+      - SPRING_RABBITMQ_PASSWORD=guest
+    networks:
+      - net
 
   reservation_read:
     build:
