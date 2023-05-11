@@ -22,7 +22,7 @@ public class Program
         var connection = rabbitMQConnection.GetConnection();
 
         var channel = connection.CreateModel();
-        channel.QueueDeclare(queue: "HotelAddtReservationMessage", durable: false, exclusive: false, autoDelete: false, arguments: null);
+        channel.QueueDeclare(queue: "hotelQueue", durable: false, exclusive: false, autoDelete: false, arguments: null);
 
 
         Console.WriteLine("Połączono");
@@ -42,19 +42,19 @@ public class Program
 
             if (rnd.Next(1, 100) > 10)
             {
-                messageSender.SendMessage("AddHotelReservationEvent", new RetrunMessage() { guid = guid, status = "canceled" });
+                messageSender.SendMessage("reservationQueue", new RetrunMessage() { guid = guid, status = "FAILURE" });
                 Console.WriteLine($"[Hotel] Rezerwacja sie udała na id {guid}");
             }
             else
             {
-                messageSender.SendMessage("CancelHotelReservationEvent", new RetrunMessage() { guid = guid, status = "ok" });
+                messageSender.SendMessage("reservationQueue", new RetrunMessage() { guid = guid, status = "OK" });
                 Console.WriteLine($"[Hotel] Rezerwacja sie nie udała na id {guid}");
             }
 
             channel.BasicAck(ea.DeliveryTag, multiple: false);
         };
 
-        channel.BasicConsume(queue: "HotelAddtReservationMessage", autoAck: false, consumer: consumer);
+        channel.BasicConsume(queue: "hotelQueue", autoAck: false, consumer: consumer);
 
 
         while (true)
