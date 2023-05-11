@@ -10,20 +10,15 @@ services:
       - MONGO_INITDB_ROOT_PASSWORD=root
     ports:
       - "27017:27017"
-    networks:
-      - net
 
-  mysql:
-    image: mysql:8.0.33
-    container_name: 'rsww_mysql'
+  postgres:
+    image: postgres:13
     restart: always
-    ports:
-      - "3306:3306"
     environment:
-      - MYSQL_ROOT_USER=root
-      - MYSQL_ROOT_PASSWORD=root
-    networks:
-      - net
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=root
+    ports:
+      - '5432:5432'
 
   rabbitmq:
     image: rabbitmq:3-management
@@ -31,8 +26,6 @@ services:
     ports:
       - "5672:5672"
       - "15672:15672"
-    networks:
-      - net
 
   transport_read:
     build:
@@ -51,7 +44,7 @@ services:
       - "9010:8080"
     environment:
       - SERVER_PORT=8080
-      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/transport_read_db?createDatabaseIfNotExist=true
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/transport_read_db
       - SPRING_DATASOURCE_USERNAME=root
       - SPRING_DATASOURCE_PASSWORD=root
       - SPRING_RABBITMQ_HOST=rabbitmq
@@ -60,8 +53,6 @@ services:
       - SPRING_RABBITMQ_PASSWORD=guest
       - SPRING_FLYWAY_USER=root
       - SPRING_FLYWAY_PASSWORD=root
-    networks:
-      - net
 
   transport_write:
     build:
@@ -80,7 +71,7 @@ services:
       - "9011:8080"
     environment:
       - SERVER_PORT=8080
-      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/transport_write_db?createDatabaseIfNotExist=true
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/transport_read_db
       - SPRING_DATASOURCE_USERNAME=root
       - SPRING_DATASOURCE_PASSWORD=root
       - SPRING_RABBITMQ_HOST=rabbitmq
@@ -89,9 +80,7 @@ services:
       - SPRING_RABBITMQ_PASSWORD=guest
       - SPRING_FLYWAY_USER=root
       - SPRING_FLYWAY_PASSWORD=root
-    networks:
-      - net
-      
+
   payment-read:
     build:
       context: ./apps/PaymentService
@@ -112,8 +101,6 @@ services:
       - SPRING_RABBITMQ_PORT=5672
       - SPRING_RABBITMQ_USERNAME=guest
       - SPRING_RABBITMQ_PASSWORD=guest
-    networks:
-      - net
 
   reservation_read:
     build:
@@ -144,8 +131,6 @@ services:
     depends_on:
       - mongo
       - rabbitmq
-    networks:
-      - net
 
   reservation_write:
     build:
@@ -177,8 +162,6 @@ services:
       - mongo
       - rabbitmq
       - transport_read
-    networks:
-      - net
 
   hotel_write:
     build:
@@ -188,8 +171,6 @@ services:
     #image: nazwa_obrazu
     depends_on:
       - rabbitmq
-    networks:
-      - mynetwork
     environment:
       - RabbitMQOptions__HostName=rabbitmq 
       - RabbitMQOptions__UserName=guest
@@ -197,6 +178,4 @@ services:
       - RabbitMQOptions__Port=5672
       - RabbitMQOptions__VirtualHost=/
       - RabbitMQOptions__RetryIntervalSeconds=10
-networks:
-  net:
-    driver: bridge
+
