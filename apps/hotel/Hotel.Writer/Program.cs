@@ -23,8 +23,8 @@ public class Program
 
         var channel = connection.CreateModel();
         var channel2 = connection.CreateModel();
-        channel.QueueDeclare(queue: "hotelQueue", durable: false, exclusive: false, autoDelete: false, arguments: null);
-        channel2.QueueDeclare(queue: "reservationQueue", durable: false, exclusive: false, autoDelete: false, arguments: null);
+        channel.QueueDeclare(queue: "hotelQueue", durable: true, exclusive: false, autoDelete: false, arguments: null);
+        channel2.QueueDeclare(queue: "reservationQueue", durable: true, exclusive: false, autoDelete: false, arguments: null);
 
 
         Console.WriteLine("Połączono");
