@@ -30,13 +30,15 @@ public class HotelRepositoryImpl implements HotelRepository {
 
 
     @Override
-    public Optional<HotelResponseModel> findHotels(Optional<LocalDate> startDate, Optional<LocalDate> endDate, Optional<Integer> numOfPeople) {
+    public Optional<HotelResponseModel> findHotels(Optional<LocalDate> startDate, Optional<LocalDate> endDate,
+                                                   Optional<Integer> numOfPeople, Optional<String> destinationLocation) {
         var uri = UriComponentsBuilder.
                 fromHttpUrl(hotelServiceBaseApiUrl)
                 .path(hotelServiceHotelsEndpoint)
                 .queryParam("startDate", startDate)
                 .queryParam("endDate", endDate)
                 .queryParam("numOPfPeople", numOfPeople)
+                .queryParam("destination", destinationLocation)
                 .build().toUri();
 
         log.info("Calling url " + uri);

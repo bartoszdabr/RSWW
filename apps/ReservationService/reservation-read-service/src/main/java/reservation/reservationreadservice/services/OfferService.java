@@ -35,7 +35,7 @@ public class OfferService {
                                             Optional<LocalDate> startDate,
                                             Optional<LocalDate> endDate,
                                             Optional<Integer> numOfPeople) {
-        var availableHotels = getHotels(startDate, endDate, numOfPeople);
+        var availableHotels = getHotels(startDate, endDate, numOfPeople, destinationLocation);
         availableHotels
                 .forEach(hotelOffer -> {
                             hotelOffer.setTransports(findMatchingTransport(startLocation,
@@ -61,8 +61,9 @@ public class OfferService {
                 : Collections.emptyList();
     }
 
-    private List<HotelOfferModel> getHotels(Optional<LocalDate> startDate, Optional<LocalDate> endDate, Optional<Integer> numOfPeople) {
-        var hotelsOptional = hotelRepository.findHotels(startDate, endDate, numOfPeople);
+    private List<HotelOfferModel> getHotels(Optional<LocalDate> startDate, Optional<LocalDate> endDate,
+                                            Optional<Integer> numOfPeople, Optional<String> destinationLocation) {
+        var hotelsOptional = hotelRepository.findHotels(startDate, endDate, numOfPeople, destinationLocation);
         if (hotelsOptional.isEmpty()) {
             log.info("Couldn't find matching hotels.");
             throw new ResponseStatusException(NOT_FOUND, "Unable to find matching hotels.");

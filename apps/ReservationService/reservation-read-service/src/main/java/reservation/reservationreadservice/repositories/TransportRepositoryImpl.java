@@ -35,10 +35,9 @@ public class TransportRepositoryImpl implements TransportRepository {
         var uri = UriComponentsBuilder
                 .fromHttpUrl(transportServiceBaseApiUrl)
                 .path(transportServiceTransportsEndpoint)
-                .queryParam("startDate", hotelOfferModel.getStartDate())
-                .queryParam("endDate", hotelOfferModel.getEndDate())
+                .queryParam("date", hotelOfferModel.getStartDate())
                 .queryParam("numOPfPeople", hotelOfferModel.getNumOfPeople())
-                .queryParam("startLocation", startLocation)
+                .queryParam("sourcePlace", startLocation)
                 .queryParam("destinationLocation", destinationLocation)
                 .build().toUri();
 
