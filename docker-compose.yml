@@ -41,6 +41,12 @@ services:
       target: transport-read-service-img
     container_name: 'rsww_transport_read'
     restart: always
+    deploy:
+      restart_policy:
+        condition: any
+        delay: 10s
+        max_attempts: 5
+        window: 60s
     ports:
       - "9010:8080"
     environment:
@@ -64,6 +70,12 @@ services:
       target: transport-write-service-img
     container_name: 'rsww_transport_write'
     restart: always
+    deploy:
+      restart_policy:
+        condition: any
+        delay: 10s
+        max_attempts: 5
+        window: 60s
     ports:
       - "9011:8080"
     environment:
@@ -86,6 +98,12 @@ services:
       dockerfile: Dockerfile
     container_name: 'rsww_payment'
     restart: always
+    deploy:
+      restart_policy:
+        condition: any
+        delay: 10s
+        max_attempts: 5
+        window: 60s
     ports:
       - "9012:8080"
     environment:
@@ -104,6 +122,12 @@ services:
       target: reservation-read-service
     container_name: 'rsww_reservation_read'
     restart: always
+    deploy:
+      restart_policy:
+        condition: any
+        delay: 10s
+        max_attempts: 5
+        window: 60s
     ports:
       - "9001:8080"
     environment:
@@ -130,6 +154,12 @@ services:
       target: reservation-write-service
     container_name: 'rsww_reservation_write'
     restart: always
+    deploy:
+      restart_policy:
+        condition: any
+        delay: 10s
+        max_attempts: 5
+        window: 60s
     ports:
       - "9000:8080"
     environment:
