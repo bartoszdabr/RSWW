@@ -23,7 +23,7 @@ public class Program
 
         var channel = connection.CreateModel();
         var channel2 = connection.CreateModel();
-        channel.QueueDeclare(queue: "hotelQueue1", durable: false, exclusive: false, autoDelete: false, arguments: null);
+        channel.QueueDeclare(queue: "hotelQueue", durable: false, exclusive: false, autoDelete: false, arguments: null);
         channel2.QueueDeclare(queue: "reservationQueue", durable: false, exclusive: false, autoDelete: false, arguments: null);
 
 
@@ -56,7 +56,7 @@ public class Program
             channel.BasicAck(ea.DeliveryTag, multiple: false);
         };
 
-        channel.BasicConsume(queue: "hotelQueue1", autoAck: false, consumer: consumer);
+        channel.BasicConsume(queue: "hotelQueue", autoAck: false, consumer: consumer);
 
         while (true)
         {
@@ -76,7 +76,7 @@ public class Program
         var connection = rabbitMQConnection.GetConnection();
 
         var channel = connection.CreateModel();
-        channel.QueueDeclare(queue: "hotelQueue1", durable: false, exclusive: false, autoDelete: false, arguments: null);
+        channel.QueueDeclare(queue: "hotelQueue", durable: false, exclusive: false, autoDelete: false, arguments: null);
 
         Console.WriteLine("Połączono");
 
@@ -111,7 +111,7 @@ public class Program
             };
 
             var messageBytes = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(messageObject));
-            channel.BasicPublish(exchange: "", routingKey: "hotelQueue1", basicProperties: null, body: messageBytes);
+            channel.BasicPublish(exchange: "", routingKey: "hotelQueue", basicProperties: null, body: messageBytes);
 
             Console.WriteLine("Wysłano wiadomość " + i);
         }
