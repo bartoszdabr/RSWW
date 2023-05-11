@@ -6,9 +6,9 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.amqp.core.AmqpAdmin;
 import org.springframework.amqp.core.Queue;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
+import org.springframework.context.annotation.Configuration;
 
-@Component
+@Configuration
 public class QueuesInitializer {
 
     private final Logger log = LogManager.getLogger(QueuesInitializer.class);
