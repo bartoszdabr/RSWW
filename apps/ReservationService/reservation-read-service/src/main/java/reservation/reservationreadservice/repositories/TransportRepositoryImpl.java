@@ -38,7 +38,7 @@ public class TransportRepositoryImpl implements TransportRepository {
                 .queryParam("date", hotelOfferModel.getStartDate())
                 .queryParam("numOPfPeople", hotelOfferModel.getNumOfPeople())
                 .queryParam("sourcePlace", startLocation)
-                .queryParam("destinationLocation", destinationLocation)
+                .queryParam("destinationPlace", destinationLocation)
                 .build().toUri();
 
         log.info("Calling url " + uri);

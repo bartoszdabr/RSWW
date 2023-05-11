@@ -35,9 +35,9 @@ public class HotelRepositoryImpl implements HotelRepository {
         var uri = UriComponentsBuilder.
                 fromHttpUrl(hotelServiceBaseApiUrl)
                 .path(hotelServiceHotelsEndpoint)
-                .queryParam("startDate", startDate)
-                .queryParam("endDate", endDate)
-                .queryParam("numOPfPeople", numOfPeople)
+                .queryParam("fromDate", startDate)
+                .queryParam("toDate", endDate)
+                .queryParam("numberOfGuestsInAllHotel", numOfPeople)
                 .queryParam("destination", destinationLocation)
                 .build().toUri();
 
