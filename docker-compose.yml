@@ -80,6 +80,23 @@ services:
     networks:
       - net
 
+  hotel_write:
+    build:
+      context: ./apps/hotel/Hotel.Writer
+      dockerfile: Dockerfile
+    container_name: 'rsww_hotel_write'
+    #image: nazwa_obrazu
+    depends_on:
+      - rabbitmq
+    networks:
+      - mynetwork
+    environment:
+      - RabbitMQOptions__HostName=rabbitmq 
+      - RabbitMQOptions__UserName=guest
+      - RabbitMQOptions__Password=guest
+      - RabbitMQOptions__Port=5672
+      - RabbitMQOptions__VirtualHost=/
+      - RabbitMQOptions__RetryIntervalSeconds=10
 networks:
   net:
     driver: bridge
