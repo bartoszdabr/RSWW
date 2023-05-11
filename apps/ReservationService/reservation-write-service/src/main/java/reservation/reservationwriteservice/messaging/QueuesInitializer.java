@@ -4,9 +4,10 @@ import jakarta.annotation.PostConstruct;
 import org.springframework.amqp.core.AmqpAdmin;
 import org.springframework.amqp.core.Queue;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
 
-@Component
+@Configuration
 public class QueuesInitializer {
     @Value("${rabbitmq.transport.queueName}")
     private String transportQueueName;
@@ -19,6 +20,9 @@ public class QueuesInitializer {
 
     @Value("${rabbitmq.event.queueName}")
     private String eventQueueName;
+
+    @Value("${rabbitmq.reservation.queueName}")
+    private String reservationQueueName;
 
     private final AmqpAdmin amqpAdmin;
 
@@ -33,5 +37,6 @@ public class QueuesInitializer {
         amqpAdmin.declareQueue(new Queue(hotelQueueName, isDurable));
         amqpAdmin.declareQueue(new Queue(paymentQueueName, isDurable));
         amqpAdmin.declareQueue(new Queue(eventQueueName, isDurable));
+        amqpAdmin.declareQueue(new Queue(reservationQueueName, isDurable));
     }
 }
