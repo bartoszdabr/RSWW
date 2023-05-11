@@ -8,7 +8,7 @@ namespace Hotel.Writer
 {
     public class RetrunMessage
     {
-        public Guid? guid { get; set; }
+        public String guid { get; set; }
 
         public string status {get; set; }
     }

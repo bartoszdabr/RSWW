@@ -8,7 +8,7 @@ using RabbitMQ.Client.Events;
 
 public class Program
 {
-    private static void Main(string[] args)
+    private static async Task Main(string[] args)
     {
         //SendMessage();
         //return;
@@ -22,11 +22,13 @@ public class Program
         var connection = rabbitMQConnection.GetConnection();
 
         var channel = connection.CreateModel();
-        channel.QueueDeclare(queue: "hotelQueue", durable: false, exclusive: false, autoDelete: false, arguments: null);
+        var channel2 = connection.CreateModel();
+        channel.QueueDeclare(queue: "hotelQueue1", durable: false, exclusive: false, autoDelete: false, arguments: null);
+        channel2.QueueDeclare(queue: "reservationQueue", durable: false, exclusive: false, autoDelete: false, arguments: null);
 
 
         Console.WriteLine("Połączono");
-        Guid? guid = null;
+        String? guid = null;
         var consumer = new EventingBasicConsumer(channel);
         consumer.Received += (model, ea) =>
         {
@@ -37,8 +39,8 @@ public class Program
             guid = reservationMessage.Guid;
             Console.WriteLine($"[Hotel] Odebrano wiadomość {reservationMessage.Guid} na pokój {reservationMessage.IdReservationRoom}");
 
-            var messageSender = new RabbitMqMessageSender<RetrunMessage>(channel);
-
+            var messageSender = new RabbitMqMessageSender<RetrunMessage>(channel2);
+            
 
             if (rnd.Next(1, 100) > 10)
             {
@@ -54,14 +56,12 @@ public class Program
             channel.BasicAck(ea.DeliveryTag, multiple: false);
         };
 
-        channel.BasicConsume(queue: "hotelQueue", autoAck: false, consumer: consumer);
-
+        channel.BasicConsume(queue: "hotelQueue1", autoAck: false, consumer: consumer);
 
         while (true)
         {
-            Thread.Sleep(1000);
-        }
 
+        }
     }
 
     public static void SendMessage()
@@ -76,28 +76,42 @@ public class Program
         var connection = rabbitMQConnection.GetConnection();
 
         var channel = connection.CreateModel();
-        channel.QueueDeclare(queue: "HotelAddtReservationMessage", durable: false, exclusive: false, autoDelete: false, arguments: null);
+        channel.QueueDeclare(queue: "hotelQueue1", durable: false, exclusive: false, autoDelete: false, arguments: null);
 
         Console.WriteLine("Połączono");
 
-        for (int i = 1; i <= 10; i++)
+        for (int i = 1; i <= 2; i++)
         {
-            var reservationMessage = new ReservationMessage
+            //var reservationMessage = new ReservationMessage
+            //{
+            //    Guid = new Guid(),
+            //    Username = "username_" + i,
+            //    IdReservationRoom = "id_rezerwacji_pokoju_" + i,
+            //    Osoby = new Person
+            //    {
+            //        DoLat3 = i,
+            //        DoLat10 = i * 2,
+            //DoLat18 = i * 3,
+            //        Dorosli = i * 4
+            //    }
+            //};
+
+            var messageObject = new
             {
-                Guid = new Guid(),
-                Username = "username_" + i,
-                IdReservationRoom = "id_rezerwacji_pokoju_" + i,
-                Osoby = new Person
+                Guid = Guid.NewGuid(),
+                Username = "abc",
+                IdReservationRoom = "roomReservationId",
+                Osoby = new
                 {
-                    DoLat3 = i,
-                    DoLat10 = i * 2,
-                    DoLat18 = i * 3,
-                    Dorosli = i * 4
+                    DoLat3 = 1,
+                    DoLat10 = 2,
+                    DoLat18 = 0,
+                    Dorosli = 2
                 }
             };
 
-            var messageBytes = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(reservationMessage));
-            channel.BasicPublish(exchange: "", routingKey: "HotelAddtReservationMessage", basicProperties: null, body: messageBytes);
+            var messageBytes = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(messageObject));
+            channel.BasicPublish(exchange: "", routingKey: "hotelQueue1", basicProperties: null, body: messageBytes);
 
             Console.WriteLine("Wysłano wiadomość " + i);
         }
