@@ -32,7 +32,10 @@ services:
       - "15672:15672"
 
   transport_read:
-    image: bartoszdab/rsww-transport-read
+    build:
+      context: ./apps/transport
+      dockerfile: Dockerfile
+      target: transport-read-service-img
     container_name: 'rsww_transport_read'
     deploy:
       restart_policy:
@@ -55,7 +58,10 @@ services:
       - SPRING_FLYWAY_PASSWORD=root
 
   transport_write:
-    image: bartoszdab/rsww-transport-write
+    build:
+      context: ./apps/transport
+      dockerfile: Dockerfile
+      target: transport-write-service-img
     container_name: 'rsww_transport_write'
     deploy:
       restart_policy:
@@ -78,7 +84,9 @@ services:
       - SPRING_FLYWAY_PASSWORD=root
 
   payment-read:
-    image: bartoszdab/rsww-payment-read
+    build:
+      context: ./apps/PaymentService
+      dockerfile: Dockerfile
     container_name: 'rsww_payment'
     deploy:
       restart_policy:
@@ -96,7 +104,10 @@ services:
       - SPRING_RABBITMQ_PASSWORD=guest
 
   reservation_read:
-    image: bartoszdab/rsww-reservation-read
+    build:
+      context: ./apps/ReservationService
+      dockerfile: Dockerfile
+      target: reservation-read-service
     container_name: 'rsww_reservation_read'
     deploy:
       restart_policy:
@@ -119,7 +130,10 @@ services:
       - SPRING_DATA_MONGODB_PASSWORD=root
 
   reservation_write:
-    image: bartoszdab/rsww-reservation-write
+    build:
+      context: ./apps/ReservationService
+      dockerfile: Dockerfile
+      target: reservation-write-service
     container_name: 'rsww_reservation_write'
     deploy:
       restart_policy:
@@ -143,7 +157,9 @@ services:
 
 
   hotel_write:
-    image: bartoszdab/rsww-hotel-write
+    build:
+      context: ./apps/hotel/Hotel.Writer
+      dockerfile: Dockerfile
     container_name: 'rsww_hotel_write'
     #image: nazwa_obrazu
     deploy:
