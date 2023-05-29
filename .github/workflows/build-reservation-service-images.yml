@@ -1,0 +1,26 @@
+name: Build and push reservation service images
+
+on:
+  push:
+    branches: [ "main" ]
+    paths:
+    - apps/ReservationService/**
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Build and push reservation read service image
+      env:
+        DOCKER_LOGIN: ${{ secrets.DOCKER_LOGIN }}
+        DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+      run: docker login -u $DOCKER_LOGIN -p $DOCKER_PASSWORD && cd apps/ReservationService && docker build --target reservation-read-service --tag bartoszdab/rsww-reservation-read:$(date +%s) . && docker push bartoszdab/rsww-reservation-read
+    - name: Build and push reservation write service image
+      env:
+        DOCKER_LOGIN: ${{ secrets.DOCKER_LOGIN }}
+        DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+      run: docker login -u $DOCKER_LOGIN -p $DOCKER_PASSWORD && cd apps/ReservationService && docker build --target reservation-write-service --tag bartoszdab/rsww-reservation-write:$(date +%s) . && docker push bartoszdab/rsww-reservation-write
