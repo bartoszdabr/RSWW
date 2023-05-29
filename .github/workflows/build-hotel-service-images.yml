@@ -1,10 +1,10 @@
-name: Build and push reservation service images
+name: Build and push hotel service images
 
 on:
   push:
     branches: [ "main" ]
     paths:
-    - apps/ReservationService/**
+    - apps/hotel/**
 
 jobs:
 

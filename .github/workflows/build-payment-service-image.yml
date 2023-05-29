@@ -1,4 +1,4 @@
-build-reservation-service-images.ymlname: Build and push reservation service images
+name: Build and push payment service images
 
 on:
   push:

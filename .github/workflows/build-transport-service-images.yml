@@ -1,4 +1,4 @@
-name: Build and push reservation service images
+name: Build and push transport service images
 
 on:
   push:
