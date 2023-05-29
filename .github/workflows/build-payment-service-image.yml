@@ -1,0 +1,21 @@
+build-reservation-service-images.ymlname: Build and push reservation service images
+
+on:
+  push:
+    branches: [ "main" ]
+    paths:
+    - apps/PaymentService/**
+
+jobs:
+
+  build_payment_service:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Build and push payment service image
+      env:
+        DOCKER_LOGIN: ${{ secrets.DOCKER_LOGIN }}
+        DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+      run: docker login -u $DOCKER_LOGIN -p $DOCKER_PASSWORD && cd apps/PaymentService && docker build --target payment-read-service-img -t bartoszdab/rsww-payment-read:latest . && docker push bartoszdab/rsww-payment-read:latest

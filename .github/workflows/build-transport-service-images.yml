@@ -1,0 +1,33 @@
+name: Build and push reservation service images
+
+on:
+  push:
+    branches: [ "main" ]
+    paths:
+    - apps/transport/**
+
+jobs:
+
+  build_transport_read:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Build and push transport read service image
+      env:
+        DOCKER_LOGIN: ${{ secrets.DOCKER_LOGIN }}
+        DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+      run: docker login -u $DOCKER_LOGIN -p $DOCKER_PASSWORD && cd apps/transport && docker build --target transport-read-service-img -t bartoszdab/rsww-transport-read:latest . && docker push bartoszdab/rsww-transport-read:latest
+
+  build_transport_write:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Build and push transport write service image
+      env:
+        DOCKER_LOGIN: ${{ secrets.DOCKER_LOGIN }}
+        DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+      run: docker login -u $DOCKER_LOGIN -p $DOCKER_PASSWORD && cd apps/transport && docker build --target transport-write-service-img -t bartoszdab/rsww-transport-write:latest . && docker push bartoszdab/rsww-transport-write:latest
