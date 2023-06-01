@@ -8,9 +8,11 @@ import org.springframework.stereotype.Service;
 import transport.common.AddReservationEvent;
 import transport.common.CancelReservationEvent;
 import transport.common.CreateTransportEvent;
+import transport.models.TransportResponseModel;
 import transport.read.entity.Transport;
 import transport.read.filters.TransportWithDate;
 import transport.read.filters.TransportWithDestinationPlace;
+import transport.read.filters.TransportWithMinSeats;
 import transport.read.filters.TransportWithSourcePlace;
 import transport.read.repositories.TransportsRepository;
 
@@ -45,15 +47,18 @@ public class TransportService {
             () -> log.warn("Transport with given id was not found"));
   }
 
-  public List<Transport> findTransports(
-      Optional<String> sourcePlace, Optional<String> destinationPlace, Optional<LocalDate> date) {
+  public TransportResponseModel findTransports(
+      Optional<String> sourcePlace, Optional<String> destinationPlace, Optional<LocalDate> date, Optional<Integer> numOfPeople) {
 
     Specification<Transport> specification =
         Specification.where(new TransportWithDestinationPlace(destinationPlace))
             .and(new TransportWithSourcePlace(sourcePlace))
-            .and(new TransportWithDate(date));
+            .and(new TransportWithDate(date))
+            .and(new TransportWithMinSeats(numOfPeople));
 
-    return transportsRepository.findAll(specification);
+    return TransportResponseModel.builder()
+            .matchingTransports(transportsRepository.findAll(specification))
+            .build();
   }
 
   public void addNewTransport(CreateTransportEvent event) {

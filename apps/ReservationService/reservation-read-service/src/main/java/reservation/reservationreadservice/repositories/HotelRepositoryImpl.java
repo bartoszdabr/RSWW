@@ -3,6 +3,7 @@ package reservation.reservationreadservice.repositories;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.client.RestTemplate;
@@ -16,6 +17,7 @@ import java.util.Optional;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 @Repository
+@Profile("default")
 public class HotelRepositoryImpl implements HotelRepository {
 
     private final Logger log = LogManager.getLogger(HotelRepositoryImpl.class);

@@ -9,14 +9,14 @@ import java.time.LocalDateTime;
 @Builder
 public class TransportModel {
 
-    private final String transportId;
+    private final String id;
 
-    private final String startLocation;
+    private final String sourcePlace;
 
-    private final String endLocation;
+    private final String destinationPlace;
 
-    private final LocalDateTime startTime;
+    private final LocalDateTime date;
 
-    private final LocalDateTime endTime;
+    private final Integer availableSeats;
 
 }

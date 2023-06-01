@@ -36,13 +36,11 @@ public class OfferService {
                                             Optional<LocalDate> endDate,
                                             Optional<Integer> numOfPeople) {
         var availableHotels = getHotels(startDate, endDate, numOfPeople, destinationLocation);
-        availableHotels
-                .forEach(hotelOffer -> {
-                            hotelOffer.setTransports(findMatchingTransport(startLocation,
-                                    destinationLocation, hotelOffer));
-                            hotelOffer.setCost(calculateOfferCost(hotelOffer));
-                        }
-                );
+        availableHotels.forEach(hotelOffer -> {
+                    hotelOffer.setTransports(findMatchingTransport(startLocation, destinationLocation, hotelOffer));
+                    hotelOffer.setCost(calculateOfferCost(hotelOffer));
+                }
+        );
 
         return availableHotels;
     }
@@ -64,11 +62,10 @@ public class OfferService {
     private List<HotelOfferModel> getHotels(Optional<LocalDate> startDate, Optional<LocalDate> endDate,
                                             Optional<Integer> numOfPeople, Optional<String> destinationLocation) {
         var hotelsOptional = hotelRepository.findHotels(startDate, endDate, numOfPeople, destinationLocation);
-        if (hotelsOptional.isEmpty()) {
+
+        return hotelsOptional.orElseThrow(() -> {
             log.info("Couldn't find matching hotels.");
             throw new ResponseStatusException(NOT_FOUND, "Unable to find matching hotels.");
-        }
-
-        return hotelsOptional.get().getAvailableHotels();
+        }).getAvailableHotels();
     }
 }
