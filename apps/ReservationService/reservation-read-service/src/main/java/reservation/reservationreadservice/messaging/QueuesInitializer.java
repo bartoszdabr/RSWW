@@ -22,6 +22,9 @@ public class QueuesInitializer {
     @Value("${rabbitmq.payment.queueName}")
     private String paymentQueueName;
 
+    @Value("${rabbitmq.event.queueName}")
+    private String eventsQueue;
+
     private final AmqpAdmin amqpAdmin;
 
     public QueuesInitializer(AmqpAdmin amqpAdmin) {
@@ -30,14 +33,16 @@ public class QueuesInitializer {
 
     @PostConstruct
     public void createQueues() {
-        log.info("Initializing queues.");
         var isDurable = true;
+        log.info("Initializing queues.");
         log.info("Initializing " + transportQueueName);
         amqpAdmin.declareQueue(new Queue(transportQueueName, isDurable));
         log.info("Initializing " + hotelQueueName);
         amqpAdmin.declareQueue(new Queue(hotelQueueName, isDurable));
         log.info("Initializing " + paymentQueueName);
         amqpAdmin.declareQueue(new Queue(paymentQueueName, isDurable));
+        log.info("Initializing " + eventsQueue);
+        amqpAdmin.declareQueue(new Queue(eventsQueue, isDurable));
         log.info("Finished initializing queues.");
     }
 }

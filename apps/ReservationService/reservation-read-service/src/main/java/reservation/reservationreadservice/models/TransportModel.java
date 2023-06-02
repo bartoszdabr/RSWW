@@ -1,22 +1,29 @@
 package reservation.reservationreadservice.models;
 
+
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
+import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Getter
 @Builder
+@AllArgsConstructor
+@Setter
+@NoArgsConstructor
 public class TransportModel {
 
-    private final String transportId;
+    private String id;
 
-    private final String startLocation;
+    private String sourcePlace;
 
-    private final String endLocation;
+    private String destinationPlace;
 
-    private final LocalDateTime startTime;
+    private LocalDate date;
 
-    private final LocalDateTime endTime;
+    private Integer availableSeats;
 
 }

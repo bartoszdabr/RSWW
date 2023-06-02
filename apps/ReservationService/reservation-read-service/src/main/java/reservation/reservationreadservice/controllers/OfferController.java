@@ -36,7 +36,6 @@ public class OfferController {
         var offers = offerService.findOffers(startLocation, destinationLocation, startDate, endDate, numOfPeople);
         log.info("Finished processing find offers request. Found " + offers.size() + " offers.");
 
-
         return ResponseEntity.ok(offers);
     }
 }
