@@ -1,6 +1,15 @@
 version: '3.4'
 
 services:
+
+  nginx:
+    container_name: 'rsww-gateway'
+    build:
+      context: ./apps/Gateway/
+      dockerfile: Dockerfile
+    ports:
+      - '80:80'
+      -
   mongo:
     image: mongo:6.0.5
     container_name: 'rsww_mongo'
@@ -153,10 +162,9 @@ services:
         max_attempts: 5
         window: 60s
     environment:
-      - RabbitMQOptions__HostName=rabbitmq 
+      - RabbitMQOptions__HostName=rabbitmq
       - RabbitMQOptions__UserName=guest
       - RabbitMQOptions__Password=guest
       - RabbitMQOptions__Port=5672
       - RabbitMQOptions__VirtualHost=/
       - RabbitMQOptions__RetryIntervalSeconds=10
-

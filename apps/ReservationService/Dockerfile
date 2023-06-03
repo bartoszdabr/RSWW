@@ -5,7 +5,7 @@ RUN gradle clean build --no-daemon
 
 FROM openjdk:17-alpine3.14 as reservation-read-service
 
-EXPOSE 9000
+EXPOSE 9001
 
 RUN mkdir /app
 
@@ -15,7 +15,7 @@ ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/app/Reserv
 
 FROM openjdk:17-alpine3.14 as reservation-write-service
 
-EXPOSE 9001
+EXPOSE 9000
 
 RUN mkdir /app
 
