@@ -1,8 +1,20 @@
 <template>
 <div class="container">
-  <div class="row">
-    <div class="col d-flex justify-content-center mb-4">
-      <img src="top-image.jpg" alt="Hotel image" class="top-image">
+  <div class="container">
+    <div id="image-slider" class="carousel slide pt-4" data-ride="carousel">
+      <div class="carousel-inner">
+        <div v-for="(image, index) in imageLinks" :key="index" :class="{ 'carousel-item': true, 'active': index === currentImage }">
+          <img :src="image" class="d-block w-100" alt="Slider Image">
+        </div>
+      </div>
+      <a class="carousel-control-prev" href="#image-slider" role="button" data-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="sr-only">Previous</span>
+      </a>
+      <a class="carousel-control-next" href="#image-slider" role="button" data-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="sr-only">Next</span>
+      </a>
     </div>
   </div>
   <div class="row">
@@ -15,17 +27,25 @@
         <h4>Available Seats: {{ transportAvailableSeats }}</h4>
       </div>
       <div class="button-group mt-4">
-        <button class="btn btn-primary">Show Offer History</button>
-        <button class="btn btn-success">Order Offer</button>
+        <button class="btn btn-primary" @click="showOfferHistory">Show Offer History</button>
+        <button class="btn btn-success" @click="orderOffer">Order Offer</button>
       </div>
     </div>
     <div class="col">
       <h2>Hotel Data</h2>
       <div class="hotel-data">
         <h4>Hotel Name: {{ hotelName }}</h4>
-        <h4>Address: {{ hotelAddress }}</h4>
         <h4>Rating: {{ hotelRating }}</h4>
-        <h4>Price: {{ hotelPrice }}</h4>
+        <div v-for="(value, key) in description" :key="key">
+          <h3>{{ key }}</h3>
+          <p v-if="value">{{ value }}</p>
+          <p v-else>No information available</p>
+      </div>
+      <h4>Tags:</h4>
+      <ul>
+        <li v-for="(tag, index) in tags" :key="index">{{ tag }}</li>
+      </ul>
+      <h4>Free places: {{ freePlaces }}</h4>
       </div>
     </div>
   </div>
@@ -48,6 +68,14 @@ export default {
         transportDate: '',
         transportSourcePlace: '',
         transportDestinationPlace: '',
+        hotelName:'',
+        opinionScone:0,
+        stars:'',
+        description: {},
+        imageLinks: [],
+        currentImage:0,
+        tags: [],
+        freePlaces: 0,
     }
   },
   mounted() {
@@ -55,7 +83,7 @@ export default {
     this.transportId = this.$route.query.transportId;
     this.fetchHotelData();
     this.fetchTransportData();
-
+  
     this.hotelCallInterval = setInterval(() => {
       this.fetchHotelData();
     }, 2000);
@@ -63,18 +91,35 @@ export default {
     this.transportCallInterval = setInterval(() => {
       this.fetchTransportData();
     }, 2000);
+    this.imageCallInterval = setInterval(() => {
+      this.slideImage();
+    }, 2000);
+
   },
   beforeDestroy() {
     clearInterval(this.hotelCallInterval);
     clearInterval(this.transportCallInterval);
+    clearInterval(this.imageCallInterval);
   },
   methods: {
     fetchHotelData() {
-        
+      const url = `${getBackendUrl()}/api/hotel/v1/read/hotel/${this.hotelId}`;
+        axios.get(url)
+        .then(response => {
+          this.hotelName = response.data.hotelName;
+          if (this.imageLinks.length < 1) {
+            this.imageLinks = response.data.images;
+          }
+          this.description = response.data.description;
+          this.tags = response.data.tags;
+          this.freePlaces = response.data.numberOfGuestsInAllRoom;
+        })
+        .catch(error => {
+          console.error(error);
+        });
     },
     fetchTransportData() {
         const url = `${getBackendUrl()}/api/transport/v1/read/transports/${this.transportId}`;
-        console.log(url);
         axios.get(url)
         .then(response => {
           console.log(response.data);
@@ -86,6 +131,15 @@ export default {
         .catch(error => {
           console.error(error);
         });
+    },
+    slideImage() {
+      this.currentImage += 1;
+      this.currentImage = this.currentImage % this.imageLinks.length;
+    },
+    showOfferHistory() {
+      this.$router.push({ name: 'OfferHistory', query: { hotelId: this.hotelId, transportId: this.transportId} });
+    },
+    orderOffer() {
 
     }
   }
