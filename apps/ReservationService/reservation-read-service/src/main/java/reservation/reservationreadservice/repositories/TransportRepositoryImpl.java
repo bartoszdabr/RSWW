@@ -3,6 +3,7 @@ package reservation.reservationreadservice.repositories;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.util.Pair;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.client.RestTemplate;
@@ -11,7 +12,12 @@ import org.springframework.web.util.UriComponentsBuilder;
 import reservation.reservationreadservice.models.HotelOfferModel;
 import reservation.reservationreadservice.models.TransportResponseModel;
 
+import java.net.URI;
+import java.util.AbstractMap;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
@@ -30,16 +36,8 @@ public class TransportRepositoryImpl implements TransportRepository {
 
     @Override
     public Optional<TransportResponseModel> findAvailableTransports(Optional<String> startLocation,
-                                                                    Optional<String> destinationLocation,
                                                                     HotelOfferModel hotelOfferModel) {
-        var uri = UriComponentsBuilder
-                .fromHttpUrl(transportServiceBaseApiUrl)
-                .path(transportServiceTransportsEndpoint)
-                .queryParam("date", hotelOfferModel.getStartDate())
-                .queryParam("numOPfPeople", hotelOfferModel.getNumOfPeople())
-                .queryParam("sourcePlace", startLocation)
-                .queryParam("destinationPlace", destinationLocation)
-                .build().toUri();
+        var uri = buildUri(startLocation, hotelOfferModel);
 
         log.info("Calling url " + uri);
         var response = restTemplate.getForEntity(uri, TransportResponseModel.class);
@@ -50,5 +48,18 @@ public class TransportRepositoryImpl implements TransportRepository {
         log.info("Finished calling " + uri);
 
         return Optional.ofNullable(response.getBody());
+    }
+
+    private URI buildUri(Optional<String> startLocation, HotelOfferModel hotelOfferModel) {
+        var uriBuilder = UriComponentsBuilder
+                .fromHttpUrl(transportServiceBaseApiUrl)
+                .path(transportServiceTransportsEndpoint)
+                .queryParam("date", hotelOfferModel.getStartDate())
+                .queryParam("numOfPeople", hotelOfferModel.getNumOfPeople())
+                .queryParam("destinationPlace", hotelOfferModel.getLocation());
+
+        startLocation.ifPresent(startLocationValue -> uriBuilder.queryParam("sourcePlace", startLocationValue));
+
+        return uriBuilder.build().toUri();
     }
 }

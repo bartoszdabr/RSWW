@@ -17,7 +17,6 @@ import transport.read.filters.TransportWithSourcePlace;
 import transport.read.repositories.TransportsRepository;
 
 import java.time.LocalDate;
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -59,6 +58,10 @@ public class TransportService {
     return TransportResponseModel.builder()
             .matchingTransports(transportsRepository.findAll(specification))
             .build();
+  }
+
+  public Optional<Transport> findTransport(String id) {
+    return transportsRepository.findById(id);
   }
 
   public void addNewTransport(CreateTransportEvent event) {
