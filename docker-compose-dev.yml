@@ -126,7 +126,6 @@ services:
       - SPRING_DATA_MONGODB_USERNAME=root
       - SPRING_DATA_MONGODB_PASSWORD=root
 
-
   hotel_write:
     build:
       context: ./apps/hotel/Hotel.Writer
@@ -140,4 +139,3 @@ services:
       - RabbitMQOptions__Port=5672
       - RabbitMQOptions__VirtualHost=/
       - RabbitMQOptions__RetryIntervalSeconds=10
-
