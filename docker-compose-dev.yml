@@ -15,18 +15,14 @@ services:
     environment:
       - POSTGRES_USER=root
       - POSTGRES_PASSWORD=root
+    volumes:
+      - ./database/create_postgres.sql:/docker-entrypoint-initdb.d/create.sql
     ports:
       - '5432:5432'
 
   rabbitmq:
     image: rabbitmq:3-management
     container_name: 'rsww_rabbitmq'
-    deploy:
-      restart_policy:
-        condition: any
-        delay: 10s
-        max_attempts: 5
-        window: 60s
     ports:
       - "5672:5672"
       - "15672:15672"
@@ -37,12 +33,7 @@ services:
       dockerfile: Dockerfile
       target: transport-read-service-img
     container_name: 'rsww_transport_read'
-    deploy:
-      restart_policy:
-        condition: any
-        delay: 10s
-        max_attempts: 5
-        window: 60s
+    restart: always
     ports:
       - "9010:8080"
     environment:
@@ -63,12 +54,7 @@ services:
       dockerfile: Dockerfile
       target: transport-write-service-img
     container_name: 'rsww_transport_write'
-    deploy:
-      restart_policy:
-        condition: any
-        delay: 10s
-        max_attempts: 5
-        window: 60s
+    restart: always
     ports:
       - "9011:8080"
     environment:
@@ -88,12 +74,7 @@ services:
       context: ./apps/PaymentService
       dockerfile: Dockerfile
     container_name: 'rsww_payment'
-    deploy:
-      restart_policy:
-        condition: any
-        delay: 10s
-        max_attempts: 5
-        window: 60s
+    restart: always
     ports:
       - "9012:8080"
     environment:
@@ -109,12 +90,7 @@ services:
       dockerfile: Dockerfile
       target: reservation-read-service
     container_name: 'rsww_reservation_read'
-    deploy:
-      restart_policy:
-        condition: any
-        delay: 10s
-        max_attempts: 5
-        window: 60s
+    restart: always
     ports:
       - "9001:8080"
     environment:
@@ -135,12 +111,7 @@ services:
       dockerfile: Dockerfile
       target: reservation-write-service
     container_name: 'rsww_reservation_write'
-    deploy:
-      restart_policy:
-        condition: any
-        delay: 10s
-        max_attempts: 5
-        window: 60s
+    restart: always
     ports:
       - "9000:8080"
     environment:
@@ -161,13 +132,7 @@ services:
       context: ./apps/hotel/Hotel.Writer
       dockerfile: Dockerfile
     container_name: 'rsww_hotel_write'
-    #image: nazwa_obrazu
-    deploy:
-      restart_policy:
-        condition: any
-        delay: 10s
-        max_attempts: 5
-        window: 60s
+    restart: always
     environment:
       - RabbitMQOptions__HostName=rabbitmq 
       - RabbitMQOptions__UserName=guest
