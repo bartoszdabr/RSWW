@@ -6,6 +6,8 @@ import org.springframework.stereotype.Service;
 import reservation.AddReservationEvent;
 import reservation.BaseEvent;
 import reservation.RemoveReservationEvent;
+import reservation.costcalculator.CostCalculator;
+import reservation.costcalculator.CostCalculatorImpl;
 import reservation.reservationwriteservice.models.AddReservation;
 import reservation.reservationwriteservice.models.RemoveReservation;
 import reservation.reservationwriteservice.repositories.EventRepository;
@@ -20,6 +22,8 @@ public class EventService {
 
     private final EventRepository eventRepository;
 
+    private final CostCalculator costCalculator = new CostCalculatorImpl();
+
     private final MessageService messageService;
 
     public EventService(EventRepository eventRepository, MessageService messageService) {
@@ -29,13 +33,14 @@ public class EventService {
 
     public void addNewReservation(AddReservation addReservation) {
         log.info("New reservation from user: " + addReservation.username());
+        var cost = costCalculator.calculateOfferCost(null, null, null);
         var addReservationEvent = AddReservationEvent.builder()
                 .eventId(UUID.randomUUID().toString())
                 .ageGroupsSize(addReservation.ageGroupsSize())
-                .cost(addReservation.cost())
+                .cost(cost)
                 .transportId(addReservation.transportId())
                 .username(addReservation.username())
-                .roomReservationId(addReservation.reservationId())
+                .roomReservationId(addReservation.roomReservationId())
                 .timestamp(Instant.now())
                 .build();
 
