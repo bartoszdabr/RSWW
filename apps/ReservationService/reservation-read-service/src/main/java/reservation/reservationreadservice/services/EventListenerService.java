@@ -5,9 +5,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Service;
-import reservation.AddReservationEvent;
-import reservation.BaseEvent;
-import reservation.RemoveReservationEvent;
+import reservation.events.ReservationEvent;
+import reservation.events.ReservationStatuses;
 
 @Service
 public class EventListenerService {
@@ -22,13 +21,13 @@ public class EventListenerService {
 
 
     @RabbitListener(queues = "${rabbitmq.event.queueName}")
-    public void receivedMessage(BaseEvent baseEvent) {
-        log.info("Received new event id:" + baseEvent.getEventId());
-        if (baseEvent instanceof AddReservationEvent) {
-            eventHandlerService.handleAddReservationEvent((AddReservationEvent) baseEvent);
-        } else if (baseEvent instanceof RemoveReservationEvent) {
-            eventHandlerService.handleRemoveReservationEvent((RemoveReservationEvent) baseEvent);
+    public void receivedMessage(ReservationEvent reservationEvent) {
+        log.info("Received new event id:" + reservationEvent.getEventId());
+        if (reservationEvent.getStatus().equals(ReservationStatuses.NEW.name())) {
+            eventHandlerService.handleAddReservationEvent(reservationEvent);
+        } else if (reservationEvent.getStatus().equals(ReservationStatuses.REMOVED.name())) {
+            eventHandlerService.handleRemoveReservationEvent(reservationEvent);
         }
-        log.info("Finished handling event id: " + baseEvent.getEventId());
+        log.info("Finished handling event id: " + reservationEvent.getEventId());
     }
 }

@@ -5,8 +5,12 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.amqp.core.AmqpAdmin;
 import org.springframework.amqp.core.Queue;
+import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
+import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 
 @Configuration
 public class QueuesInitializer {
@@ -44,5 +48,12 @@ public class QueuesInitializer {
         log.info("Initializing " + eventsQueue);
         amqpAdmin.declareQueue(new Queue(eventsQueue, isDurable));
         log.info("Finished initializing queues.");
+    }
+
+    @Bean
+    public MessageConverter jsonMessageConverter(Jackson2ObjectMapperBuilder builder) {
+        var objectMapper = builder.createXmlMapper(false).build();
+        objectMapper.findAndRegisterModules();
+        return new Jackson2JsonMessageConverter(objectMapper);
     }
 }

@@ -4,6 +4,6 @@ import reservation.AgeRange;
 
 import java.util.HashMap;
 
-public record AddReservation(String username, Long transportId, Long roomReservationId,
-                             HashMap<AgeRange, Long> ageGroupsSize) {
+public record AddReservation(String username, String transportId, Long roomReservationId,
+                             HashMap<AgeRange, Long> ageGroupsSize, Double stars) {
 }
