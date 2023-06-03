@@ -1,9 +1,9 @@
-FROM gradle:8.1.1-jdk17-alpine AS build
+FROM gradle:8.1.1-jdk17 AS build
 COPY --chown=gradle:gradle . /home/gradle/src
 WORKDIR /home/gradle/src
 RUN gradle clean build --no-daemon
 
-FROM openjdk:17-alpine3.14 as reservation-read-service
+FROM openjdk:17 as reservation-read-service
 
 EXPOSE 9000
 
@@ -13,7 +13,7 @@ COPY --from=build /home/gradle/src/reservation-read-service/build/libs/reservati
 
 ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/app/ReservationReadService.jar"]
 
-FROM openjdk:17-alpine3.14 as reservation-write-service
+FROM openjdk:17 as reservation-write-service
 
 EXPOSE 9001
 
