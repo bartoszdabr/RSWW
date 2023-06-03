@@ -1,24 +1,25 @@
 package reservation.reservationwriteservice.services;
 
+import lombok.AllArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
-import reservation.AddReservationEvent;
-import reservation.BaseEvent;
-import reservation.RemoveReservationEvent;
+import reservation.events.ReservationEvent;
 import reservation.costcalculator.CostCalculator;
 import reservation.costcalculator.CostCalculatorImpl;
 import reservation.reservationwriteservice.models.AddReservation;
 import reservation.reservationwriteservice.models.RemoveReservation;
 import reservation.reservationwriteservice.repositories.EventRepository;
+import reservation.events.ReservationStatuses;
 
 import java.time.Instant;
 import java.util.UUID;
 
 @Service
+@AllArgsConstructor
 public class EventService {
 
-    Logger log = LogManager.getLogger(EventService.class);
+    private final Logger log = LogManager.getLogger(EventService.class);
 
     private final EventRepository eventRepository;
 
@@ -26,33 +27,34 @@ public class EventService {
 
     private final MessageService messageService;
 
-    public EventService(EventRepository eventRepository, MessageService messageService) {
-        this.eventRepository = eventRepository;
-        this.messageService = messageService;
-    }
+    private final SagaService sagaService;
 
     public void addNewReservation(AddReservation addReservation) {
         log.info("New reservation from user: " + addReservation.username());
-        var cost = costCalculator.calculateOfferCost(null, null, null);
-        var addReservationEvent = AddReservationEvent.builder()
+        var cost = costCalculator.calculateOfferCost(addReservation.ageGroupsSize(), null, null);
+        var reservationEvent = ReservationEvent.builder()
                 .eventId(UUID.randomUUID().toString())
                 .ageGroupsSize(addReservation.ageGroupsSize())
                 .cost(cost)
                 .transportId(addReservation.transportId())
                 .username(addReservation.username())
                 .roomReservationId(addReservation.roomReservationId())
+                .reservationId(UUID.randomUUID().toString())
                 .timestamp(Instant.now())
+                .status(ReservationStatuses.NEW.name())
                 .build();
 
-        saveEventToNoSql(addReservationEvent);
+        saveEventToNoSql(reservationEvent);
 
-        sendEvent(addReservationEvent);
+        sendEventToReservationRead(reservationEvent);
+
+        sagaService.startSaga(reservationEvent);
     }
 
     public void removeReservation(RemoveReservation removeReservation) {
         log.info("New remove reservation id: " + removeReservation.removedReservationId());
-        var removeReservationEvent = RemoveReservationEvent.builder()
-                .removedReservationId(removeReservation.removedReservationId())
+        var removeReservationEvent = ReservationEvent.builder()
+                .eventId(removeReservation.removedReservationId())
                 .username(removeReservation.username())
                 .timestamp(Instant.now())
                 .eventId(UUID.randomUUID().toString())
@@ -60,15 +62,15 @@ public class EventService {
 
         saveEventToNoSql(removeReservationEvent);
 
-        sendEvent(removeReservationEvent);
+        sendEventToReservationRead(removeReservationEvent);
     }
 
-    private void saveEventToNoSql(BaseEvent baseEvent) {
-        eventRepository.insert(baseEvent);
-        log.info("Event id: " + baseEvent.getEventId() + " inserted to db");
+    private void saveEventToNoSql(ReservationEvent event) {
+        eventRepository.insert(event);
+        log.info("Event id: " + event.getEventId() + " inserted to db");
     }
 
-    private void sendEvent(BaseEvent baseEvent) {
-        messageService.sendEvent(baseEvent);
+    private void sendEventToReservationRead(ReservationEvent event) {
+        messageService.sendEventToReservationRead(event);
     }
 }

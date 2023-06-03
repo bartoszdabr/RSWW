@@ -3,8 +3,7 @@ package reservation.reservationreadservice.services;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
-import reservation.AddReservationEvent;
-import reservation.RemoveReservationEvent;
+import reservation.events.ReservationEvent;
 import reservation.reservationreadservice.entities.ReservationEntity;
 import reservation.reservationreadservice.repositories.ReservationRepository;
 
@@ -19,16 +18,16 @@ public class EventHandlerService {
         this.reservationRepository = reservationRepository;
     }
 
-    public void handleAddReservationEvent(AddReservationEvent addReservationEvent) {
+    public void handleAddReservationEvent(ReservationEvent reservationEvent) {
         log.info("New add reservation event.");
         var reservationEntity = ReservationEntity.builder()
-                .id(addReservationEvent.getEventId())
-                .username(addReservationEvent.getUsername())
-                .transportId(addReservationEvent.getTransportId())
-                .roomReservationId(addReservationEvent.getRoomReservationId())
-                .ageGroupsSize(addReservationEvent.getAgeGroupsSize())
-                .cost(addReservationEvent.getCost())
-                .timestamp(addReservationEvent.getTimestamp())
+                .id(reservationEvent.getEventId())
+                .username(reservationEvent.getUsername())
+                .transportId(reservationEvent.getTransportId())
+                .roomReservationId(reservationEvent.getRoomReservationId())
+                .ageGroupsSize(reservationEvent.getAgeGroupsSize())
+                .cost(reservationEvent.getCost())
+                .timestamp(reservationEvent.getTimestamp())
                 .build();
 
         saveReservationToNoSql(reservationEntity);
@@ -36,8 +35,8 @@ public class EventHandlerService {
 
     }
 
-    public void handleRemoveReservationEvent(RemoveReservationEvent removeReservationEvent) {
-        reservationRepository.findById(removeReservationEvent.getRemovedReservationId()).ifPresent(reservationRepository::delete);
+    public void handleRemoveReservationEvent(ReservationEvent removeReservationEvent) {
+        reservationRepository.findById(removeReservationEvent.getEventId()).ifPresent(reservationRepository::delete);
         log.info("Removed reservation id: " + removeReservationEvent.getEventId());
 
     }

@@ -1,21 +1,29 @@
-package reservation.reservationreadservice.entities;
+package reservation.events;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.MongoId;
 import reservation.AgeRange;
 
+import java.io.Serializable;
 import java.time.Instant;
 import java.util.HashMap;
 
 @Builder
 @Getter
-@Document("reservations")
-public class ReservationEntity {
+@Setter
+@Document("events")
+public class ReservationEvent implements Serializable {
 
     @MongoId
-    private String id;
+    private String eventId;
+
+    private Instant timestamp;
+
+    private String status;
 
     private String username;
 
@@ -23,9 +31,14 @@ public class ReservationEntity {
 
     private Long roomReservationId;
 
+    private String reservationId;
+
     private HashMap<AgeRange, Long> ageGroupsSize;
 
     private Double cost;
 
-    private Instant timestamp;
+    public Long getNumOfPeople() {
+        return ageGroupsSize.values().stream().reduce(0L, Long::sum);
+    }
+
 }
