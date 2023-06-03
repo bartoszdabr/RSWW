@@ -10,7 +10,6 @@ import transport.write.model.TransportEventResponseModel;
 import transport.write.services.EventService;
 
 @RestController
-@CrossOrigin
 @RequiredArgsConstructor
 public class EventController {
   private final EventService eventService;
