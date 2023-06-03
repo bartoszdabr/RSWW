@@ -53,7 +53,6 @@
         if (match) {
           sessionStorage.setItem('username', this.username);
           sessionStorage.setItem('password', this.password);
-          console.log('match')
           this.$router.push('/');
         } else {
           this.errorMessage = 'Invalid credentials. Please try again.';

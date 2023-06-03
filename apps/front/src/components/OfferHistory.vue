@@ -1,5 +1,42 @@
 <template>
-    <h1>Offer history</h1>
+    <div class="container">
+    <div class="row">
+      <div class="col-md-6">
+        <h2>Transport changes</h2>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Message</th>
+              <th>Time</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="event in transportEvents">
+              <td>{{ event.message }}</td>
+              <td>{{ event.timestamp }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="col-md-6">
+        <h2>Hotel changes</h2>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Message</th>
+              <th>Time</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="event in hotelEvents">
+              <td>{{ event.message }}</td>
+              <td>{{ event.timestamp }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -12,7 +49,7 @@ export default {
         hotelId: '',
         transportId: '',
         hotelEvents: [],
-        transportEvents: [],
+        transportEvents: []
     }
   },
   mounted() {
@@ -39,41 +76,49 @@ export default {
       const url = `${getBackendUrl()}/api/hotel/v1/write/events/${this.hotelId}`;
         axios.get(url)
         .then(response => {
-        
+            //TODO: handle hotel events
         })
         .catch(error => {
           console.error(error);
         });
     },
     fetchTransportEvents() {
-        //const url = `${getBackendUrl()}/api/transport/v1/write/events/${this.transportId}`;
-        const url = 'http://localhost:9011/api/transport/v1/write/events/02050f21-7561-4e12-ac59-e3c9b80cbed5';
+        const url = `${getBackendUrl()}/api/transport/v1/write/events/${this.transportId}`;
         axios.get(url)
         .then(response => {
-            //console.log(response.data);
             this.formatTransportEvents(response.data.transportEvents)
         })
         .catch(error => {
-          //console.error(error);
+          console.error(error);
         });
     },
 
     formatTransportEvents(transportEvents) {
-        //console.log(transportEvents);
-        const events = 
-
+        let events = []
         transportEvents.forEach(event => {
-            const eventJson = JSON.parse(event.eventJson.replace(/\\/g, ''));
-            const timestamp = event.timeStamp;
-            const availableSeats = eventJson.availableSeats;
-            //console.log(event.type)
+            const eventJson = JSON.parse(event.eventJson);
+            const timestamp = eventJson.timeStamp;
             if (event.type == 'CREATE') {
-                console.log(eventJson.timeStamp);
-                console.log(eventJson.availableSeats);
+                const availableSeats = eventJson.availableSeats;
+                events.push({
+                    message: 'The new transport was created with ' + availableSeats + ' available seats.',
+                    timestamp: timestamp
+                })
+            } else if(event.type == 'ADD') {
+                const numberOfPeople = eventJson.numberOfPeople;
+                events.push({
+                    message: 'The number of seats has decreased -' + numberOfPeople + ' new seats.',
+                    timestamp: timestamp
+                })
+            } else {
+                const numberOfPeople = eventJson.numberOfPeople;
+                events.push({
+                    message: 'The number of seats has increased +' + numberOfPeople + ' seats.',
+                    timestamp: timestamp
+                })
             }
-            
-            //console.log(timestamp);
         });
+        this.transportEvents = events;
     }
   }
 };

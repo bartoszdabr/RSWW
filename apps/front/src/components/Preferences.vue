@@ -1,10 +1,38 @@
 <template>
-    <div id="preferences" class="container">
-        <h1>Top directions</h1>
-
-        <h1>Top hotels</h1>
-
+  <div class="container">
+    <div class="row">
+      <div class="col-md-6">
+        <h2>Top hotels</h2>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Hotel</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="hotel in topHotels">
+              <td>{{ hotel }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="col-md-6">
+        <h2>Top destinations</h2>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Destination</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="destination in topDestinations">
+              <td>{{ destination }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
+  </div>
 </template>
 
 <script>
@@ -14,7 +42,7 @@ export default {
   data() {
     return {
         topHotels: [],
-        topDirections: [],
+        topDestinations: [],
     }
   },
   mounted() {
@@ -34,7 +62,7 @@ export default {
       const url = `${getBackendUrl()}/api/hotel/v1/write/preferences`;
         axios.get(url)
         .then(response => {
-        
+          //handle preferences
         })
         .catch(error => {
           console.error(error);

@@ -22,7 +22,6 @@ export function isAuthenticated() {
     cred => cred.username === username && cred.password === password
   );
 
-  console.log(match)
   if (match) {
     return true;
   }

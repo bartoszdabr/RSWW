@@ -49,6 +49,9 @@
       </div>
     </div>
   </div>
+  <div>
+    <h1 v-if="purchaseMessage">{{ purchaseMessage }}</h1>
+  </div>
 </div>
 
 
@@ -76,6 +79,9 @@ export default {
         currentImage:0,
         tags: [],
         freePlaces: 0,
+        purchaseMessage: '',
+        lastPurchaseTimestamp: '2000-01-01T20:37:24.670918Z',
+        reservationStatus: ''
     }
   },
   mounted() {
@@ -86,20 +92,23 @@ export default {
   
     this.hotelCallInterval = setInterval(() => {
       this.fetchHotelData();
-    }, 2000);
+    }, 1000);
     
     this.transportCallInterval = setInterval(() => {
       this.fetchTransportData();
-    }, 2000);
+    }, 1000);
     this.imageCallInterval = setInterval(() => {
       this.slideImage();
     }, 2000);
-
+    this.purchaseCallInterval = setInterval(() => {
+      this.lookForNewPurchase();
+    }, 2000);
   },
   beforeDestroy() {
     clearInterval(this.hotelCallInterval);
     clearInterval(this.transportCallInterval);
     clearInterval(this.imageCallInterval);
+    clearInterval(this.purchaseCallInterval);
   },
   methods: {
     fetchHotelData() {
@@ -132,6 +141,22 @@ export default {
           console.error(error);
         });
     },
+    lookForNewPurchase() {
+        //make api call
+
+
+        this.purchaseMessage = '';
+        //mock value
+        let newPurchaseTimestamp = '2000-01-01T21:37:24.670918Z';
+
+        const lastPurchaseDate = new Date(this.lastPurchaseTimestamp);
+        const newPurchaseDate = new Date(newPurchaseTimestamp);
+
+        if (newPurchaseDate > lastPurchaseDate) {
+          this.purchaseMessage = 'Someone purchased this offer';
+          this.lastPurchaseTimestamp = newPurchaseTimestamp;
+        }
+    },
     slideImage() {
       this.currentImage += 1;
       this.currentImage = this.currentImage % this.imageLinks.length;
@@ -140,7 +165,9 @@ export default {
       this.$router.push({ name: 'OfferHistory', query: { hotelId: this.hotelId, transportId: this.transportId} });
     },
     orderOffer() {
+      //make api call
 
+      
     }
   }
 }
