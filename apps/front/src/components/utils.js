@@ -21,7 +21,7 @@ export function isAuthenticated() {
   const match = credentialsList.find(
     cred => cred.username === username && cred.password === password
   );
-  
+
   console.log(match)
   if (match) {
     return true;
@@ -30,10 +30,6 @@ export function isAuthenticated() {
 }
 
 export function getBackendUrl() {
+  //TODO: inject proxy url via env
   return 'http://localhost:9010'
 }
-
-
-
-
-  

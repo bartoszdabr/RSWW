@@ -79,14 +79,14 @@
   </div>
 
   </div>
-  
+
 
 </template>
 
 
 
 <script>
-import { toQueryString } from './utils.js'; 
+import { toQueryString } from './utils.js';
 import {getBackendUrl} from './utils.js';
 import axios from 'axios';
 
@@ -144,13 +144,13 @@ export default {
       if(numOfPeople>0) {
         queryParams.numOfPeople = numOfPeople;
       }
-      
+
       this.makeApiRequest(queryParams);
     },
     makeApiRequest(queryParams) {
       const apiUrl = `${getBackendUrl()}${toQueryString(queryParams)}`;
       console.log(apiUrl);
-      
+
       let mock = '[{"hotelId":"123","name":"hotelName","rating":0,"stars":0,"location":"Turcja","startDate":"2023-06-02","endDate":"2023-06-02","numOfPeople":0,"transports":[{"id":"02050f21-7561-4e12-ac59-e3c9b80cbed5","sourcePlace":"string","destinationPlace":"string","date":"2023-06-02","availableSeats":0},{"id":"transport2","sourcePlace":"string","destinationPlace":"string","date":"2023-06-02","availableSeats":0}],"cost":0}]';
       this.offers = JSON.parse(mock);
 
@@ -159,5 +159,3 @@ export default {
   },
 };
 </script>
-
-
