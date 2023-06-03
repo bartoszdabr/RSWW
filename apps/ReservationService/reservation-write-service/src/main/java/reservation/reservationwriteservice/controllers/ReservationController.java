@@ -22,7 +22,7 @@ public class ReservationController {
         this.eventService = eventService;
     }
 
-    @PostMapping("add")
+    @PostMapping("reservations")
     public ResponseEntity<Void> addNewReservation(@RequestBody AddReservation addReservation) {
         log.info("New reservation event request");
         eventService.addNewReservation(addReservation);

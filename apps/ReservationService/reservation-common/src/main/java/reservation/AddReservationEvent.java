@@ -19,4 +19,6 @@ public class AddReservationEvent extends BaseEvent {
 
     private Double cost;
 
+    private String status;
+
 }

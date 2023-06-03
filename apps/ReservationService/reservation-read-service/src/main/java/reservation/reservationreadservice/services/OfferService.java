@@ -4,6 +4,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+import reservation.costcalculator.CostCalculator;
+import reservation.costcalculator.CostCalculatorImpl;
 import reservation.reservationreadservice.models.HotelOfferModel;
 import reservation.reservationreadservice.models.TransportModel;
 import reservation.reservationreadservice.repositories.HotelRepository;
@@ -20,6 +22,8 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 public class OfferService {
 
     private final Logger log = LogManager.getLogger(OfferService.class);
+
+    private final CostCalculator costCalculator = new CostCalculatorImpl();
 
     private final HotelRepository hotelRepository;
 
@@ -38,16 +42,11 @@ public class OfferService {
         var availableHotels = getHotels(startDate, endDate, numOfPeople, destinationLocation);
         availableHotels.forEach(hotelOffer -> {
                     hotelOffer.setTransports(findMatchingTransport(startLocation, hotelOffer));
-                    hotelOffer.setCost(calculateOfferCost(hotelOffer));
+                    hotelOffer.setCost(costCalculator.calculateOfferCost(null, null, null)); // TODO
                 }
         );
 
         return availableHotels;
-    }
-
-    private Double calculateOfferCost(HotelOfferModel hotelOffer) {
-        // TODO: Dodaj algorytm liczenia kosztu wycieczki
-        return null;
     }
 
     private List<TransportModel> findMatchingTransport(Optional<String> startLocation, HotelOfferModel hotel) {
