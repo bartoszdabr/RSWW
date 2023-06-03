@@ -139,3 +139,11 @@ services:
       - RabbitMQOptions__Port=5672
       - RabbitMQOptions__VirtualHost=/
       - RabbitMQOptions__RetryIntervalSeconds=10
+
+  front:
+    build:
+      context: ./apps/front
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - "9013:8080"

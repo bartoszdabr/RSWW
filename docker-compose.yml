@@ -159,4 +159,15 @@ services:
       - RabbitMQOptions__Port=5672
       - RabbitMQOptions__VirtualHost=/
       - RabbitMQOptions__RetryIntervalSeconds=10
+  front:
+    #TODO: generate image
+    image: 'front'
+    deploy:
+      restart_policy:
+        condition: any
+        delay: 10s
+        max_attempts: 5
+        window: 60s
+    ports:
+      - "9013:8080"
 
