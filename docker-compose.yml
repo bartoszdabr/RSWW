@@ -9,7 +9,7 @@ services:
       dockerfile: Dockerfile
     ports:
       - '80:80'
-      -
+
   mongo:
     image: mongo:6.0.5
     container_name: 'rsww_mongo'

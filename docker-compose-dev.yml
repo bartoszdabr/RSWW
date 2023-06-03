@@ -1,6 +1,15 @@
 version: '3.4'
 
 services:
+
+  nginx:
+    container_name: 'rsww-gateway'
+    build:
+      context: ./apps/Gateway/
+      dockerfile: Dockerfile
+    ports:
+      - '80:80'
+
   mongo:
     image: mongo:6.0.5
     container_name: 'rsww_mongo'
