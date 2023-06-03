@@ -1,0 +1,2 @@
+CREATE DATABASE transport_read_db;
+CREATE DATABASE transport_write_db;
