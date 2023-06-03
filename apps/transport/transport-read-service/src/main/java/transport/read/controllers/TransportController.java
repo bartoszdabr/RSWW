@@ -1,7 +1,10 @@
 package transport.read.controllers;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import transport.models.TransportResponseModel;
 import transport.read.entity.Transport;
 import transport.read.services.TransportService;
@@ -10,7 +13,6 @@ import java.time.LocalDate;
 import java.util.Optional;
 
 @RestController
-@CrossOrigin
 public class TransportController {
   private final TransportService transportService;
 
