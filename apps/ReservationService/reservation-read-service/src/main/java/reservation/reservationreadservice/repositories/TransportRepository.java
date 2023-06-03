@@ -8,6 +8,5 @@ import java.util.Optional;
 public interface TransportRepository {
 
     Optional<TransportResponseModel> findAvailableTransports(Optional<String> startLocation,
-                                                             Optional<String> destinationLocation,
                                                              HotelOfferModel hotelOfferModel);
 }

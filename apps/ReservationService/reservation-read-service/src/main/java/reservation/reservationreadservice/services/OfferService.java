@@ -37,7 +37,7 @@ public class OfferService {
                                             Optional<Integer> numOfPeople) {
         var availableHotels = getHotels(startDate, endDate, numOfPeople, destinationLocation);
         availableHotels.forEach(hotelOffer -> {
-                    hotelOffer.setTransports(findMatchingTransport(startLocation, destinationLocation, hotelOffer));
+                    hotelOffer.setTransports(findMatchingTransport(startLocation, hotelOffer));
                     hotelOffer.setCost(calculateOfferCost(hotelOffer));
                 }
         );
@@ -50,9 +50,9 @@ public class OfferService {
         return null;
     }
 
-    private List<TransportModel> findMatchingTransport(Optional<String> startLocation, Optional<String> destinationLocation, HotelOfferModel hotel) {
+    private List<TransportModel> findMatchingTransport(Optional<String> startLocation, HotelOfferModel hotel) {
         var matchingTransportsFromApi = transportRepository.findAvailableTransports(
-                startLocation, destinationLocation, hotel);
+                startLocation, hotel);
 
         return matchingTransportsFromApi.isPresent()
                 ? matchingTransportsFromApi.get().getMatchingTransports()
