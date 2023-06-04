@@ -1,5 +1,6 @@
 package reservation.reservationreadservice.controllers;
 
+import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.http.ResponseEntity;
@@ -14,15 +15,12 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
+@RequiredArgsConstructor
 public class OfferController {
 
     private final Logger log = LogManager.getLogger(OfferController.class);
 
     private final OfferService offerService;
-
-    public OfferController(OfferService offerService) {
-        this.offerService = offerService;
-    }
 
     @GetMapping("offers")
     public ResponseEntity<List<HotelOfferModel>> getOffers(
@@ -30,10 +28,14 @@ public class OfferController {
             @RequestParam Optional<String> destinationLocation,
             @RequestParam Optional<LocalDate> startDate,
             @RequestParam Optional<LocalDate> endDate,
-            @RequestParam Optional<Integer> numOfPeople
+            @RequestParam Optional<Integer> adults,
+            @RequestParam Optional<Integer> under3YearsOld,
+            @RequestParam Optional<Integer> under10YearsOld,
+            @RequestParam Optional<Integer> under18YearsOld
     ) {
         log.info("New find offers request");
-        var offers = offerService.findOffers(startLocation, destinationLocation, startDate, endDate, numOfPeople);
+        var offers = offerService.findOffers(startLocation, destinationLocation,
+                startDate, endDate, adults, under3YearsOld, under10YearsOld, under18YearsOld);
         log.info("Finished processing find offers request. Found " + offers.size() + " offers.");
 
         return ResponseEntity.ok(offers);

@@ -1,9 +1,12 @@
 package reservation.reservationreadservice.services;
 
+import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+import reservation.costcalculator.CostCalculator;
+import reservation.costcalculator.CostCalculatorImpl;
 import reservation.reservationreadservice.models.HotelOfferModel;
 import reservation.reservationreadservice.models.TransportModel;
 import reservation.reservationreadservice.repositories.HotelRepository;
@@ -13,41 +16,44 @@ import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 @Service
+@RequiredArgsConstructor
 public class OfferService {
 
     private final Logger log = LogManager.getLogger(OfferService.class);
+
+    private final CostCalculator costCalculator = new CostCalculatorImpl();
 
     private final HotelRepository hotelRepository;
 
     private final TransportRepository transportRepository;
 
-    public OfferService(HotelRepository hotelRepository, TransportRepository transportRepository) {
-        this.hotelRepository = hotelRepository;
-        this.transportRepository = transportRepository;
-    }
-
     public List<HotelOfferModel> findOffers(Optional<String> startLocation,
                                             Optional<String> destinationLocation,
                                             Optional<LocalDate> startDate,
                                             Optional<LocalDate> endDate,
-                                            Optional<Integer> numOfPeople) {
+                                            Optional<Integer> adults,
+                                            Optional<Integer> under3YearsOld,
+                                            Optional<Integer> under10YearsOld,
+                                            Optional<Integer> under18YearsOld
+                                            ) {
+        var numOfPeople = Stream.of(adults, under3YearsOld, under10YearsOld, under18YearsOld)
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .reduce(0, Integer::sum);
+
         var availableHotels = getHotels(startDate, endDate, numOfPeople, destinationLocation);
         availableHotels.forEach(hotelOffer -> {
                     hotelOffer.setTransports(findMatchingTransport(startLocation, hotelOffer));
-                    hotelOffer.setCost(calculateOfferCost(hotelOffer));
+                    hotelOffer.setCost(costCalculator.calculateOfferCost(null, null, null)); // TODO
                 }
         );
 
         return availableHotels;
-    }
-
-    private Double calculateOfferCost(HotelOfferModel hotelOffer) {
-        // TODO: Dodaj algorytm liczenia kosztu wycieczki
-        return null;
     }
 
     private List<TransportModel> findMatchingTransport(Optional<String> startLocation, HotelOfferModel hotel) {
@@ -60,7 +66,7 @@ public class OfferService {
     }
 
     private List<HotelOfferModel> getHotels(Optional<LocalDate> startDate, Optional<LocalDate> endDate,
-                                            Optional<Integer> numOfPeople, Optional<String> destinationLocation) {
+                                            Integer numOfPeople, Optional<String> destinationLocation) {
         var hotelsOptional = hotelRepository.findHotels(startDate, endDate, numOfPeople, destinationLocation);
 
         return hotelsOptional.orElseThrow(() -> {

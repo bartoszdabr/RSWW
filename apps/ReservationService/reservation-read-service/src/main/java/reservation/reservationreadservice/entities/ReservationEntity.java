@@ -11,7 +11,7 @@ import java.util.HashMap;
 
 @Builder
 @Getter
-@Document("reservations")
+@Document("#{@environment.getProperty('reservations.collection')}")
 public class ReservationEntity {
 
     @MongoId
@@ -19,7 +19,7 @@ public class ReservationEntity {
 
     private String username;
 
-    private Long transportId;
+    private String transportId;
 
     private Long roomReservationId;
 
@@ -28,4 +28,6 @@ public class ReservationEntity {
     private Double cost;
 
     private Instant timestamp;
+
+    private String status;
 }

@@ -1,34 +1,27 @@
 package reservation.reservationreadservice.services;
 
 
+import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Service;
-import reservation.AddReservationEvent;
-import reservation.BaseEvent;
-import reservation.RemoveReservationEvent;
+import reservation.events.ReservationEvent;
 
 @Service
+@RequiredArgsConstructor
 public class EventListenerService {
 
-    Logger log = LogManager.getLogger(EventListenerService.class);
+    private final Logger log = LogManager.getLogger(EventListenerService.class);
 
     private final EventHandlerService eventHandlerService;
 
-    public EventListenerService(EventHandlerService eventHandlerService) {
-        this.eventHandlerService = eventHandlerService;
-    }
-
-
     @RabbitListener(queues = "${rabbitmq.event.queueName}")
-    public void receivedMessage(BaseEvent baseEvent) {
-        log.info("Received new event id:" + baseEvent.getEventId());
-        if (baseEvent instanceof AddReservationEvent) {
-            eventHandlerService.handleAddReservationEvent((AddReservationEvent) baseEvent);
-        } else if (baseEvent instanceof RemoveReservationEvent) {
-            eventHandlerService.handleRemoveReservationEvent((RemoveReservationEvent) baseEvent);
-        }
-        log.info("Finished handling event id: " + baseEvent.getEventId());
+    public void receivedMessage(ReservationEvent reservationEvent) {
+        log.info("Received new event id:" + reservationEvent.getEventId() +
+                " reservation: " + reservationEvent.getReservationId());
+        eventHandlerService.handleAddReservationEvent(reservationEvent);
+        log.info("Finished handling event id: " + reservationEvent.getEventId() +
+                " for reservation: " + reservationEvent.getReservationId());
     }
 }

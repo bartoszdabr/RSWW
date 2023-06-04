@@ -1,5 +1,6 @@
 package reservation.reservationwriteservice.controllers;
 
+import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.http.ResponseEntity;
@@ -12,31 +13,17 @@ import reservation.reservationwriteservice.models.RemoveReservation;
 import reservation.reservationwriteservice.services.EventService;
 
 @RestController
+@RequiredArgsConstructor
 public class ReservationController {
 
-    Logger log = LogManager.getLogger(ReservationController.class);
+    private final Logger log = LogManager.getLogger(ReservationController.class);
 
     private final EventService eventService;
 
-    public ReservationController(EventService eventService) {
-        this.eventService = eventService;
-    }
-
-    @PostMapping("add")
+    @PostMapping("reservations")
     public ResponseEntity<Void> addNewReservation(@RequestBody AddReservation addReservation) {
         log.info("New reservation event request");
         eventService.addNewReservation(addReservation);
-
-        log.info("Reservation event request succeeded");
-        return ResponseEntity
-                .ok()
-                .build();
-    }
-
-    @DeleteMapping("remove")
-    public ResponseEntity<Void> removeReservation(@RequestBody RemoveReservation removeReservation) {
-        log.info("New reservation event request");
-        eventService.removeReservation(removeReservation);
 
         log.info("Reservation event request succeeded");
         return ResponseEntity

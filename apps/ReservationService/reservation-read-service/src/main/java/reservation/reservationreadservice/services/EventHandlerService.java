@@ -1,49 +1,40 @@
 package reservation.reservationreadservice.services;
 
+import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
-import reservation.AddReservationEvent;
-import reservation.RemoveReservationEvent;
+import reservation.events.ReservationEvent;
 import reservation.reservationreadservice.entities.ReservationEntity;
 import reservation.reservationreadservice.repositories.ReservationRepository;
 
 @Service
+@RequiredArgsConstructor
 public class EventHandlerService {
 
-    Logger log = LogManager.getLogger(EventHandlerService.class);
+    private final Logger log = LogManager.getLogger(EventHandlerService.class);
 
     private final ReservationRepository reservationRepository;
 
-    public EventHandlerService(ReservationRepository reservationRepository) {
-        this.reservationRepository = reservationRepository;
-    }
-
-    public void handleAddReservationEvent(AddReservationEvent addReservationEvent) {
-        log.info("New add reservation event.");
+    public void handleAddReservationEvent(ReservationEvent reservationEvent) {
         var reservationEntity = ReservationEntity.builder()
-                .id(addReservationEvent.getEventId())
-                .username(addReservationEvent.getUsername())
-                .transportId(addReservationEvent.getTransportId())
-                .roomReservationId(addReservationEvent.getRoomReservationId())
-                .ageGroupsSize(addReservationEvent.getAgeGroupsSize())
-                .cost(addReservationEvent.getCost())
-                .timestamp(addReservationEvent.getTimestamp())
+                .id(reservationEvent.getReservationId())
+                .username(reservationEvent.getUsername())
+                .transportId(reservationEvent.getTransportId())
+                .roomReservationId(reservationEvent.getRoomReservationId())
+                .ageGroupsSize(reservationEvent.getAgeGroupsSize())
+                .cost(reservationEvent.getCost())
+                .timestamp(reservationEvent.getTimestamp())
+                .status(reservationEvent.getStatus())
                 .build();
 
         saveReservationToNoSql(reservationEntity);
-        log.info("Finished handling new add reservation event.");
-
-    }
-
-    public void handleRemoveReservationEvent(RemoveReservationEvent removeReservationEvent) {
-        reservationRepository.findById(removeReservationEvent.getRemovedReservationId()).ifPresent(reservationRepository::delete);
-        log.info("Removed reservation id: " + removeReservationEvent.getEventId());
 
     }
 
     private void saveReservationToNoSql(ReservationEntity reservationEntity) {
-        reservationRepository.insert(reservationEntity);
+        log.info("Saving reservation with id: " + reservationEntity.getId());
+        reservationRepository.save(reservationEntity);
         log.info("Reservation id: " + reservationEntity.getId() + " inserted to db");
     }
 }
