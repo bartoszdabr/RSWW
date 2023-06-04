@@ -10,7 +10,7 @@ public class ReserveTransportEvent {
 
     @JsonProperty("id")
     private String reservationId;
-
+    
     @JsonProperty("userName")
     private String username;
 
