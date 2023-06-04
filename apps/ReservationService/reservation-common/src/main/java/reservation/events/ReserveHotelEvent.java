@@ -17,7 +17,7 @@ public class ReserveHotelEvent implements Serializable {
     private String username;
 
     @JsonProperty("roomReservationId")
-    private Long roomReservationId;
+    private String roomReservationId;
 
     @JsonProperty("numOfPeople")
     private Long numOfPeople;
