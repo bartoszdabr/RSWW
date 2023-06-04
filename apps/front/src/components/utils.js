@@ -5,7 +5,6 @@ export function toQueryString(params) {
   }
 
 export function isAuthenticated() {
-  console.log('invoked')
   const username = sessionStorage.getItem('username');
   const password = sessionStorage.getItem('password');
 
@@ -22,7 +21,6 @@ export function isAuthenticated() {
     cred => cred.username === username && cred.password === password
   );
 
-  console.log(match)
   if (match) {
     return true;
   }

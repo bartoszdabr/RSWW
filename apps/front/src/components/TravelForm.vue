@@ -42,7 +42,6 @@
     <button type="submit" class="btn btn-primary" @click="submitForm">Submit</button>
   </form>
 
-
     <div id="offer-list" class="container py-4">
     <div class="row">
       <div class="col-md-12">
@@ -77,10 +76,10 @@
       </div>
     </div>
   </div>
-
-  </div>
-
-
+  <div>
+      <h1 >{{ errorMessage }}</h1>
+    </div>
+</div>
 </template>
 
 
@@ -102,16 +101,23 @@ export default {
       numberOfChildren3: 0,
       numberOfChildren10: 0,
       numberOfChildren18: 0,
-      offers: []
+      offers: [],
+      errorMessage:''
     };
   },
   methods: {
     handleOfferClick(hotelId, transportId) {
-      this.$router.push({ name: 'Offer', query: { hotelId: hotelId, transportId: transportId} });
+      let peoples = {
+        numberOfAdults: parseInt(this.numberOfAdults),
+        numberOfChildren3: parseInt(this.numberOfChildren3),
+        numberOfChildren10: parseInt(this.numberOfChildren10),
+        numberOfChildren18: parseInt(this.numberOfChildren18)
+      }
+      this.$router.push({ name: 'Offer', query: { hotelId: hotelId, transportId: transportId, data:peoples} });
     },
     submitForm() {
       const queryParams = {};
-
+      this.errorMessage = '';
       if (this.destination) {
         queryParams.destinationLocation = this.destination;
       }
@@ -122,6 +128,10 @@ export default {
 
       if (this.departureDate) {
         queryParams.startDate = this.departureDate;
+      }
+
+      if (this.endDate) {
+        queryParams.endDate = this.endDate;
       }
       let numOfPeople = 0;
 
@@ -145,10 +155,14 @@ export default {
         queryParams.numOfPeople = numOfPeople;
       }
 
-      this.makeApiRequest(queryParams);
+      if(numOfPeople<=0) {
+        this.errorMessage = 'Please specify positive number of people';
+      } else {
+        this.makeApiRequest(queryParams);
+      }
     },
     makeApiRequest(queryParams) {
-      const apiUrl = `${getBackendUrl()}${toQueryString(queryParams)}`;
+      const apiUrl = `${getBackendUrl()}?${toQueryString(queryParams)}`;
       console.log(apiUrl);
 
       let mock = '[{"hotelId":"123","name":"hotelName","rating":0,"stars":0,"location":"Turcja","startDate":"2023-06-02","endDate":"2023-06-02","numOfPeople":0,"transports":[{"id":"02050f21-7561-4e12-ac59-e3c9b80cbed5","sourcePlace":"string","destinationPlace":"string","date":"2023-06-02","availableSeats":0},{"id":"transport2","sourcePlace":"string","destinationPlace":"string","date":"2023-06-02","availableSeats":0}],"cost":0}]';

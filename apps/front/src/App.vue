@@ -8,7 +8,7 @@
         <router-link to="/" class="nav-link px-3">Home</router-link>
       </li>
       <li class="nav-item">
-        <router-link to="/hello" class="nav-link px-3">About</router-link>
+        <router-link to="/preferences" class="nav-link px-3">Preferences</router-link>
       </li>
       <li class="nav-item">
         <button class="btn btn-outline-light" @click="logout">Logout</button>
