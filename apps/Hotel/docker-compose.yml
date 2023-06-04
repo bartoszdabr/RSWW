@@ -1,0 +1,64 @@
+version: '3.8'
+services:
+  hotel-api:
+    build:
+      context: ./Hotel.API
+      dockerfile: Dockerfile
+    ports:
+      - 8080:80
+    environment:
+      - MONGODB__CONNECTUINSTRING=mongodb://mongo:27017
+    restart: always
+    depends_on:
+      - mongo
+    networks:
+      - mynetwork
+
+  hotel-event-handler:
+    build:
+      context: ./Hotel.EventHandler
+      dockerfile: Dockerfile
+    ports:
+      - 8081:80
+    environment:
+      - MONGODB__CONNECTUINSTRING=mongodb://mongo:27017
+    restart: always
+    depends_on:
+      - mongo
+    networks:
+      - mynetwork
+
+  hotel-command:
+    build:
+      context: ./Hotel.Commands	
+      dockerfile: Dockerfile
+    ports:
+      - 8082:80
+    environment:
+      - MONGODB__CONNECTUINSTRING=mongodb://mongo:27017
+    restart: always
+    depends_on:
+      - mongo
+    networks:
+      - mynetwork
+
+  mongo:
+    image: mongo:latest
+    restart: always
+    ports:
+      - 27017:27017
+    networks:
+      - mynetwork
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    restart: always
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - mynetwork
+
+networks:
+  mynetwork:
+    driver: bridge
