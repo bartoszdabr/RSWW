@@ -19,7 +19,7 @@ public class ReserveHotelEvent implements Serializable {
     private String username;
 
     @JsonProperty("roomReservationId")
-    private Long roomReservationId;
+    private String roomReservationId;
 
     @JsonProperty("ageGroups")
     private HashMap<AgeRange, Long> ageGroups;
