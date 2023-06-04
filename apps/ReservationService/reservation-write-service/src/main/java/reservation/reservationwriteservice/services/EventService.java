@@ -31,7 +31,7 @@ public class EventService {
 
     public void addNewReservation(AddReservation addReservation) {
         log.info("New reservation from user: " + addReservation.username());
-        var cost = costCalculator.calculateOfferCost(addReservation.ageGroupsSize(), null);
+        var cost = costCalculator.calculateOfferCost(addReservation.ageGroupsSize(), addReservation.numOfDays());
         var reservationEvent = ReservationEvent.builder()
                 .eventId(UUID.randomUUID().toString())
                 .ageGroupsSize(addReservation.ageGroupsSize())

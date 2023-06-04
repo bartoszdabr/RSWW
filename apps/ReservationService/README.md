@@ -12,7 +12,8 @@ with the following payload
     "lessThan10YearsOld": 0,
     "lessThan18YearsOld": 0,
     "adult": 2
-  }
+  },
+  "numOfDays": 2
 }
 ```
 
