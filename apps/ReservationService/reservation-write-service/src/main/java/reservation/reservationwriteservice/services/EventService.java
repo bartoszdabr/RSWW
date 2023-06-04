@@ -41,7 +41,7 @@ public class EventService {
                 .roomReservationId(addReservation.roomReservationId())
                 .reservationId(UUID.randomUUID().toString())
                 .timestamp(Instant.now())
-                .status(ReservationStatuses.NEW.name())
+                .status(ReservationStatuses.NEW.getText())
                 .build();
 
         saveEventToNoSql(reservationEvent);

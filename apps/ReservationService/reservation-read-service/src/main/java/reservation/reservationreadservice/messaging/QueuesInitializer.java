@@ -1,6 +1,7 @@
 package reservation.reservationreadservice.messaging;
 
 import jakarta.annotation.PostConstruct;
+import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.amqp.core.AmqpAdmin;
@@ -13,6 +14,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 
 @Configuration
+@RequiredArgsConstructor
 public class QueuesInitializer {
 
     private final Logger log = LogManager.getLogger(QueuesInitializer.class);
@@ -30,10 +32,6 @@ public class QueuesInitializer {
     private String eventsQueue;
 
     private final AmqpAdmin amqpAdmin;
-
-    public QueuesInitializer(AmqpAdmin amqpAdmin) {
-        this.amqpAdmin = amqpAdmin;
-    }
 
     @PostConstruct
     public void createQueues() {

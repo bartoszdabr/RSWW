@@ -9,7 +9,6 @@ import reservation.events.ReservationStatuses;
 import reservation.reservationwriteservice.repositories.EventRepository;
 import reservation.reservationwriteservice.services.EventService;
 import reservation.reservationwriteservice.services.SagaRollbackService;
-import reservation.reservationwriteservice.services.SagaService;
 
 @Component
 @AllArgsConstructor
@@ -24,7 +23,7 @@ public class TimeoutTask {
     public void checkIfReservationTimeouted(String reservationId) {
         log.info("Checking if reservation: " + reservationId + " finished");
         var reservation = eventRepository.findFinishedReservationById(reservationId,
-                ReservationStatuses.RESERVED.name());
+                ReservationStatuses.RESERVED.getText());
 
         if (reservation.isEmpty()) {
             revertTransaction(reservationId);
