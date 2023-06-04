@@ -4,6 +4,7 @@ import TravelForm from '@/components/TravelForm'
 import Preferences from '@/components/Preferences'
 import Login from '@/components/Login'
 import Offer from '@/components/Offer'
+import OfferHistory from '@/components/OfferHistory'
 import { isAuthenticated } from '@/components/utils.js';
 
 Vue.use(Router)
@@ -26,9 +27,14 @@ const router =  new Router({
       component: Login
     },
     {
-      path: '/offer/:hotelId/:transportId',
+      path: '/offer/:hotelId/:transportId/:data',
       name: 'Offer',
       component: Offer
+    },
+    {
+      path: '/history/:hotelId/:transportId',
+      name: 'OfferHistory',
+      component: OfferHistory
     }
   ]
 })
