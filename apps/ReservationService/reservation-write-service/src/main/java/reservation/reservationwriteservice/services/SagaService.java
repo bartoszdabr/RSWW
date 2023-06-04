@@ -113,7 +113,7 @@ public class SagaService {
                 .eventId(reservationEvent.getReservationId())
                 .username(reservationEvent.getUsername())
                 .roomReservationId(reservationEvent.getRoomReservationId())
-                .ageGroups(reservationEvent.getAgeGroupsSize())
+                .numOfPeople(reservationEvent.getNumOfPeople())
                 .type(ReservationType.ADD.getText())
                 .build();
         messageService.sendEventToHotel(reserveHotelEvent);

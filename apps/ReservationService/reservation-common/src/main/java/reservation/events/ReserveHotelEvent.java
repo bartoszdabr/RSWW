@@ -3,10 +3,8 @@ package reservation.events;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.Getter;
-import reservation.AgeRange;
 
 import java.io.Serializable;
-import java.util.HashMap;
 
 @Builder
 @Getter
@@ -21,8 +19,8 @@ public class ReserveHotelEvent implements Serializable {
     @JsonProperty("roomReservationId")
     private Long roomReservationId;
 
-    @JsonProperty("ageGroups")
-    private HashMap<AgeRange, Long> ageGroups;
+    @JsonProperty("numOfPeople")
+    private Long numOfPeople;
 
     @JsonProperty("type")
     private String type;
