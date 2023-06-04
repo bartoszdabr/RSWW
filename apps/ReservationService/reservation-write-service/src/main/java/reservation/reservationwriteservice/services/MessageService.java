@@ -1,6 +1,7 @@
 package reservation.reservationwriteservice.services;
 
 
+import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -12,6 +13,7 @@ import reservation.events.ReserveHotelEvent;
 import reservation.events.ReserveTransportEvent;
 
 @Service
+@RequiredArgsConstructor
 public class MessageService {
 
     Logger log = LogManager.getLogger(MessageService.class);
@@ -31,10 +33,6 @@ public class MessageService {
     private String paymentQueueName;
 
     private final String DEFAULT_EXCHANGE_NAME = "";
-
-    public MessageService(RabbitTemplate rabbitTemplate) {
-        this.rabbitTemplate = rabbitTemplate;
-    }
 
     public void sendEventToReservationRead(ReservationEvent event) {
         log.info("Sending message to " + eventQueueName);

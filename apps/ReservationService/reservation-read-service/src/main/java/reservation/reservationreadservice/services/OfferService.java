@@ -1,5 +1,6 @@
 package reservation.reservationreadservice.services;
 
+import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,7 @@ import java.util.Optional;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 @Service
+@RequiredArgsConstructor
 public class OfferService {
 
     private final Logger log = LogManager.getLogger(OfferService.class);
@@ -28,11 +30,6 @@ public class OfferService {
     private final HotelRepository hotelRepository;
 
     private final TransportRepository transportRepository;
-
-    public OfferService(HotelRepository hotelRepository, TransportRepository transportRepository) {
-        this.hotelRepository = hotelRepository;
-        this.transportRepository = transportRepository;
-    }
 
     public List<HotelOfferModel> findOffers(Optional<String> startLocation,
                                             Optional<String> destinationLocation,

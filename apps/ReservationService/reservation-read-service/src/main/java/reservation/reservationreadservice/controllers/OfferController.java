@@ -1,5 +1,6 @@
 package reservation.reservationreadservice.controllers;
 
+import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.http.ResponseEntity;
@@ -14,15 +15,12 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
+@RequiredArgsConstructor
 public class OfferController {
 
     private final Logger log = LogManager.getLogger(OfferController.class);
 
     private final OfferService offerService;
-
-    public OfferController(OfferService offerService) {
-        this.offerService = offerService;
-    }
 
     @GetMapping("offers")
     public ResponseEntity<List<HotelOfferModel>> getOffers(

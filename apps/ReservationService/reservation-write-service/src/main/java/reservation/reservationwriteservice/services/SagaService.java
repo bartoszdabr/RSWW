@@ -50,7 +50,9 @@ public class SagaService {
                 SAGA_TIMEOUT_MINUTES, TimeUnit.MINUTES);
     }
 
-    public void processSagaStep(SagaResponse sagaResponse) throws EventNotFoundException, RollbackException, StatusNotKnownException {
+    public void processSagaStep(SagaResponse sagaResponse) throws EventNotFoundException,
+            RollbackException, StatusNotKnownException {
+
         var events = getAllReservationEventsSorted(sagaResponse.getReservationId());
         var originalEvent = getOriginalEvent(events);
         var latestEvent = events.get(events.size() -1);
@@ -62,19 +64,16 @@ public class SagaService {
             throw rollbackException;
         }
 
-
         switch (ReservationStatuses.fromText(latestEvent.getStatus())) {
             case NEW -> {
-                updateAfterHotelConfirmation(sagaResponse.getReservationId());
+                updateAfterHotelConfirmation(originalEvent);
                 initTransportStep(originalEvent);
             }
             case HOTEL_CONFIRMED -> {
-                updateAfterTransportConfirmation(sagaResponse.getReservationId());
+                updateAfterTransportConfirmation(originalEvent);
                 initPaymentStep(originalEvent);
             }
-            case TRANSPORT_CONFIRMED -> {
-                updateAfterPaymentConfirmation(sagaResponse.getReservationId());
-            }
+            case TRANSPORT_CONFIRMED -> updateAfterPaymentConfirmation(originalEvent);
             default -> throw new StatusNotKnownException("Not known status for event");
         }
 
@@ -120,29 +119,28 @@ public class SagaService {
         messageService.sendEventToHotel(reserveHotelEvent);
     }
 
-    private void updateAfterPaymentConfirmation(String reservationId) {
-        var event = insertAndCreateEventWithIdAndStatus(reservationId, ReservationStatuses.RESERVED.getText());
+    private void updateAfterPaymentConfirmation(ReservationEvent reservationEvent) {
+        var event = insertAndCreateEventWithIdAndStatus(reservationEvent, ReservationStatuses.RESERVED.getText());
         messageService.sendEventToReservationRead(event);
     }
 
-    private void updateAfterTransportConfirmation(String reservationId) {
-        insertAndCreateEventWithIdAndStatus(reservationId, ReservationStatuses.TRANSPORT_CONFIRMED.getText());
+    private void updateAfterTransportConfirmation(ReservationEvent reservationEvent) {
+        var event = insertAndCreateEventWithIdAndStatus(reservationEvent, ReservationStatuses.TRANSPORT_CONFIRMED.getText());
+        messageService.sendEventToReservationRead(event);
     }
 
-    private void updateAfterHotelConfirmation(String reservationId) {
-        insertAndCreateEventWithIdAndStatus(reservationId, ReservationStatuses.HOTEL_CONFIRMED.getText());
+    private void updateAfterHotelConfirmation(ReservationEvent reservationEvent) {
+        var event = insertAndCreateEventWithIdAndStatus(reservationEvent, ReservationStatuses.HOTEL_CONFIRMED.getText());
+        messageService.sendEventToReservationRead(event);
     }
 
-    private ReservationEvent insertAndCreateEventWithIdAndStatus(String reservationId, String status) {
-        var event = ReservationEvent.builder()
-                .eventId(UUID.randomUUID().toString())
-                .timestamp(Instant.now())
-                .status(status)
-                .reservationId(reservationId)
-                .build();
-        eventRepository.insert(event);
+    private ReservationEvent insertAndCreateEventWithIdAndStatus(ReservationEvent reservationEvent, String status) {
+        reservationEvent.setStatus(status);
+        reservationEvent.setEventId(UUID.randomUUID().toString());
+        reservationEvent.setTimestamp(Instant.now());
+        eventRepository.insert(reservationEvent);
 
-        return event;
+        return reservationEvent;
     }
 
     private void validateSagaEvents(List<ReservationEvent> reservationEventList, String reservationId, String sagaResponseStatus)
@@ -152,7 +150,7 @@ public class SagaService {
             throw new EventNotFoundException("No reservation events for id: " + reservationId);
         }
 
-        var shouldRollback = reservationEventList.stream().anyMatch(event -> event.getStatus().equals(ReservationStatuses.REMOVED.name()))
+        var shouldRollback = reservationEventList.stream().anyMatch(event -> event.getStatus().equals(ReservationStatuses.REMOVED.getText()))
                 || sagaResponseStatus.equals(SagaResponseStatuses.FAILURE.getText());
         if (shouldRollback) {
             throw new RollbackException("Rollback started for id: " + reservationId);

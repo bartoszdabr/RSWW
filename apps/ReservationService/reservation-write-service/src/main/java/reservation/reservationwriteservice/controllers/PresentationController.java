@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Profile("mock")
 public class PresentationController {
 
-    Logger log = LogManager.getLogger(PresentationController.class);
+    private final Logger log = LogManager.getLogger(PresentationController.class);
 
     private final String DEFAULT_EXCHANGE_NAME = "";
 
