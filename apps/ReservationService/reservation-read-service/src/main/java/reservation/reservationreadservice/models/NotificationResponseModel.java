@@ -9,6 +9,6 @@ import java.time.Instant;
 @Getter
 public class NotificationResponseModel {
 
-    private final Instant buyTimestamp;
+    private final Instant timestamp;
 
 }

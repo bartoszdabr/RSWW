@@ -26,7 +26,7 @@ public class NotificationController {
         log.info("Notification request for transportid: " + transportId + " hotelId: " + hotelId);
         var lastBuyTimestamp = notificationService.checkIfBought(hotelId, transportId);
 
-        return ResponseEntity.ok(NotificationResponseModel.builder().buyTimestamp(lastBuyTimestamp).build());
+        return ResponseEntity.ok(NotificationResponseModel.builder().timestamp(lastBuyTimestamp).build());
     }
 
 }
