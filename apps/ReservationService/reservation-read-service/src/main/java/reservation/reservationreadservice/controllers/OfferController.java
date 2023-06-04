@@ -28,10 +28,10 @@ public class OfferController {
             @RequestParam Optional<String> destinationLocation,
             @RequestParam Optional<LocalDate> startDate,
             @RequestParam Optional<LocalDate> endDate,
-            @RequestParam Optional<Integer> adults,
-            @RequestParam Optional<Integer> under3YearsOld,
-            @RequestParam Optional<Integer> under10YearsOld,
-            @RequestParam Optional<Integer> under18YearsOld
+            @RequestParam Optional<Long> adults,
+            @RequestParam Optional<Long> under3YearsOld,
+            @RequestParam Optional<Long> under10YearsOld,
+            @RequestParam Optional<Long> under18YearsOld
     ) {
         log.info("New find offers request");
         var offers = offerService.findOffers(startLocation, destinationLocation,

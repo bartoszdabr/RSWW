@@ -14,7 +14,7 @@ import java.util.Optional;
 public class HotelRepositoryMockImpl implements HotelRepository {
     @Override
     public Optional<HotelResponseModel> findHotels(Optional<LocalDate> startDate, Optional<LocalDate> endDate,
-                                                   Integer numOfPeople, Optional<String> destinationLocation) {
+                                                   Long numOfPeople, Optional<String> destinationLocation) {
         return Optional.of(HotelResponseModel.builder()
                 .availableHotels(Arrays.asList(
                         HotelOfferModel.builder()

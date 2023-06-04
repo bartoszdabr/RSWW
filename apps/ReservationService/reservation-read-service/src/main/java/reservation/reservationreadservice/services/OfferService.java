@@ -5,6 +5,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+import reservation.AgeRange;
 import reservation.costcalculator.CostCalculator;
 import reservation.costcalculator.CostCalculatorImpl;
 import reservation.reservationreadservice.models.HotelOfferModel;
@@ -15,9 +16,11 @@ import reservation.reservationreadservice.repositories.TransportRepository;
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import static java.time.temporal.ChronoUnit.DAYS;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 @Service
@@ -36,20 +39,25 @@ public class OfferService {
                                             Optional<String> destinationLocation,
                                             Optional<LocalDate> startDate,
                                             Optional<LocalDate> endDate,
-                                            Optional<Integer> adults,
-                                            Optional<Integer> under3YearsOld,
-                                            Optional<Integer> under10YearsOld,
-                                            Optional<Integer> under18YearsOld
+                                            Optional<Long> adults,
+                                            Optional<Long> under3YearsOld,
+                                            Optional<Long> under10YearsOld,
+                                            Optional<Long> under18YearsOld
                                             ) {
         var numOfPeople = Stream.of(adults, under3YearsOld, under10YearsOld, under18YearsOld)
                 .filter(Optional::isPresent)
                 .map(Optional::get)
-                .reduce(0, Integer::sum);
+                .reduce(0L, Long::sum);
 
         var availableHotels = getHotels(startDate, endDate, numOfPeople, destinationLocation);
         availableHotels.forEach(hotelOffer -> {
                     hotelOffer.setTransports(findMatchingTransport(startLocation, hotelOffer));
-                    hotelOffer.setCost(costCalculator.calculateOfferCost(null, null, null)); // TODO
+                    hotelOffer.setCost(costCalculator.calculateOfferCost(Map.of(
+                            AgeRange.LESS_THAN_3_YEARS_OLD, under3YearsOld.orElse(0L),
+                            AgeRange.LESS_THAN_10_YEARS_OLD, under10YearsOld.orElse(0L),
+                            AgeRange.LESS_THAN_18_YEARS_OLD, under18YearsOld.orElse(0L),
+                            AgeRange.ADULT, adults.orElse(0L)
+                    ), DAYS.between(hotelOffer.getStartDate(), hotelOffer.getEndDate())));
                 }
         );
 
@@ -66,7 +74,7 @@ public class OfferService {
     }
 
     private List<HotelOfferModel> getHotels(Optional<LocalDate> startDate, Optional<LocalDate> endDate,
-                                            Integer numOfPeople, Optional<String> destinationLocation) {
+                                            Long numOfPeople, Optional<String> destinationLocation) {
         var hotelsOptional = hotelRepository.findHotels(startDate, endDate, numOfPeople, destinationLocation);
 
         return hotelsOptional.orElseThrow(() -> {

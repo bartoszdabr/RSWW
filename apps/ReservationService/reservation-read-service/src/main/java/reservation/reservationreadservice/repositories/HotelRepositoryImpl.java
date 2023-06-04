@@ -33,7 +33,7 @@ public class HotelRepositoryImpl implements HotelRepository {
 
     @Override
     public Optional<HotelResponseModel> findHotels(Optional<LocalDate> startDate, Optional<LocalDate> endDate,
-                                                   Integer numOfPeople, Optional<String> destinationLocation) {
+                                                   Long numOfPeople, Optional<String> destinationLocation) {
         var uri = UriComponentsBuilder.
                 fromHttpUrl(hotelServiceBaseApiUrl)
                 .path(hotelServiceHotelsEndpoint)
