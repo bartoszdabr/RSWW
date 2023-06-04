@@ -36,6 +36,8 @@
 </template>
 
 <script>
+import {getBackendUrl} from './utils.js';
+import axios from 'axios';
 
 export default {
   name: 'Preferences',
@@ -49,7 +51,7 @@ export default {
     this.fetchPreferences();
   
     this.preferencesCallInterval = setInterval(() => {
-      this.fetchHotelEvents();
+      this.fetchPreferences();
     }, 1000);
     
   },

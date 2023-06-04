@@ -42,7 +42,6 @@
     <button type="submit" class="btn btn-primary" @click="submitForm">Submit</button>
   </form>
 
-
     <div id="offer-list" class="container py-4">
     <div class="row">
       <div class="col-md-12">
@@ -77,6 +76,9 @@
       </div>
     </div>
   </div>
+  <div>
+      <h1 >{{ errorMessage }}</h1>
+    </div>
 </div>
 </template>
 
@@ -99,16 +101,23 @@ export default {
       numberOfChildren3: 0,
       numberOfChildren10: 0,
       numberOfChildren18: 0,
-      offers: []
+      offers: [],
+      errorMessage:''
     };
   },
   methods: {
     handleOfferClick(hotelId, transportId) {
-      this.$router.push({ name: 'Offer', query: { hotelId: hotelId, transportId: transportId} });
+      let peoples = {
+        numberOfAdults: parseInt(this.numberOfAdults),
+        numberOfChildren3: parseInt(this.numberOfChildren3),
+        numberOfChildren10: parseInt(this.numberOfChildren10),
+        numberOfChildren18: parseInt(this.numberOfChildren18)
+      }
+      this.$router.push({ name: 'Offer', query: { hotelId: hotelId, transportId: transportId, data:peoples} });
     },
     submitForm() {
       const queryParams = {};
-
+      this.errorMessage = '';
       if (this.destination) {
         queryParams.destinationLocation = this.destination;
       }
@@ -146,7 +155,11 @@ export default {
         queryParams.numOfPeople = numOfPeople;
       }
 
-      this.makeApiRequest(queryParams);
+      if(numOfPeople<=0) {
+        this.errorMessage = 'Please specify positive number of people';
+      } else {
+        this.makeApiRequest(queryParams);
+      }
     },
     makeApiRequest(queryParams) {
       const apiUrl = `${getBackendUrl()}?${toQueryString(queryParams)}`;

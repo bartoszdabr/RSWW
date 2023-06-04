@@ -35,7 +35,8 @@
       <h2>Hotel Data</h2>
       <div class="hotel-data">
         <h4>Hotel Name: {{ hotelName }}</h4>
-        <h4>Rating: {{ hotelRating }}</h4>
+        <h4>Opinion Score: {{ opinionScone }}</h4>
+        <h4>Stars: {{ stars }}</h4>
         <div v-for="(value, key) in description" :key="key">
           <h3>{{ key }}</h3>
           <p v-if="value">{{ value }}</p>
@@ -73,7 +74,7 @@ export default {
         transportDestinationPlace: '',
         hotelName:'',
         opinionScone:0,
-        stars:'',
+        stars:0,
         description: {},
         imageLinks: [],
         currentImage:0,
@@ -81,19 +82,22 @@ export default {
         freePlaces: 0,
         purchaseMessage: '',
         lastPurchaseTimestamp: '2000-01-01T20:37:24.670918Z',
-        reservationStatus: ''
+        reservationStatus: '',
+        peoples: {}
     }
   },
   mounted() {
     this.hotelId = this.$route.query.hotelId;
     this.transportId = this.$route.query.transportId;
+    this.peoples = this.$route.query.data;
+    console.log(this.peoples);
     this.fetchHotelData();
     this.fetchTransportData();
-  
+
     this.hotelCallInterval = setInterval(() => {
       this.fetchHotelData();
     }, 1000);
-    
+
     this.transportCallInterval = setInterval(() => {
       this.fetchTransportData();
     }, 1000);
@@ -167,7 +171,6 @@ export default {
     orderOffer() {
       //make api call
 
-      
     }
   }
 }

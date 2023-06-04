@@ -27,7 +27,7 @@ const router =  new Router({
       component: Login
     },
     {
-      path: '/offer/:hotelId/:transportId',
+      path: '/offer/:hotelId/:transportId/:data',
       name: 'Offer',
       component: Offer
     },
