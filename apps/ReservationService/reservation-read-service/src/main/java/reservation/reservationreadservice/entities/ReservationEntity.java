@@ -21,7 +21,7 @@ public class ReservationEntity {
 
     private String transportId;
 
-    private Long roomReservationId;
+    private String roomReservationId;
 
     private HashMap<AgeRange, Long> ageGroupsSize;
 

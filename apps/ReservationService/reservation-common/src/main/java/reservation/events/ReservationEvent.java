@@ -29,7 +29,7 @@ public class ReservationEvent implements Serializable {
 
     private String transportId;
 
-    private Long roomReservationId;
+    private String roomReservationId;
 
     private String reservationId;
 
