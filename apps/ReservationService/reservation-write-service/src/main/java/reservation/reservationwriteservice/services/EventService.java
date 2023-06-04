@@ -51,20 +51,6 @@ public class EventService {
         sagaService.startSaga(reservationEvent);
     }
 
-    public void removeReservation(RemoveReservation removeReservation) {
-        log.info("New remove reservation id: " + removeReservation.removedReservationId());
-        var removeReservationEvent = ReservationEvent.builder()
-                .eventId(removeReservation.removedReservationId())
-                .username(removeReservation.username())
-                .timestamp(Instant.now())
-                .eventId(UUID.randomUUID().toString())
-                .build();
-
-        saveEventToNoSql(removeReservationEvent);
-
-        sendEventToReservationRead(removeReservationEvent);
-    }
-
     private void saveEventToNoSql(ReservationEvent event) {
         eventRepository.insert(event);
         log.info("Event id: " + event.getEventId() + " inserted to db");

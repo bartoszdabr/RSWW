@@ -16,6 +16,7 @@ import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
@@ -35,7 +36,16 @@ public class OfferService {
                                             Optional<String> destinationLocation,
                                             Optional<LocalDate> startDate,
                                             Optional<LocalDate> endDate,
-                                            Optional<Integer> numOfPeople) {
+                                            Optional<Integer> adults,
+                                            Optional<Integer> under3YearsOld,
+                                            Optional<Integer> under10YearsOld,
+                                            Optional<Integer> under18YearsOld
+                                            ) {
+        var numOfPeople = Stream.of(adults, under3YearsOld, under10YearsOld, under18YearsOld)
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .reduce(0, Integer::sum);
+
         var availableHotels = getHotels(startDate, endDate, numOfPeople, destinationLocation);
         availableHotels.forEach(hotelOffer -> {
                     hotelOffer.setTransports(findMatchingTransport(startLocation, hotelOffer));
@@ -56,7 +66,7 @@ public class OfferService {
     }
 
     private List<HotelOfferModel> getHotels(Optional<LocalDate> startDate, Optional<LocalDate> endDate,
-                                            Optional<Integer> numOfPeople, Optional<String> destinationLocation) {
+                                            Integer numOfPeople, Optional<String> destinationLocation) {
         var hotelsOptional = hotelRepository.findHotels(startDate, endDate, numOfPeople, destinationLocation);
 
         return hotelsOptional.orElseThrow(() -> {
