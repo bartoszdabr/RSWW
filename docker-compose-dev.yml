@@ -36,7 +36,7 @@ services:
       - "5672:5672"
       - "15672:15672"
 
-  transport_read:
+  transportRead:
     build:
       context: ./apps/transport
       dockerfile: Dockerfile
@@ -57,7 +57,7 @@ services:
       - SPRING_FLYWAY_USER=root
       - SPRING_FLYWAY_PASSWORD=root
 
-  transport_write:
+  transportWrite:
     build:
       context: ./apps/transport
       dockerfile: Dockerfile
@@ -78,7 +78,7 @@ services:
       - SPRING_FLYWAY_USER=root
       - SPRING_FLYWAY_PASSWORD=root
 
-  payment-read:
+  paymentRead:
     build:
       context: ./apps/PaymentService
       dockerfile: Dockerfile
@@ -93,7 +93,7 @@ services:
       - SPRING_RABBITMQ_USERNAME=guest
       - SPRING_RABBITMQ_PASSWORD=guest
 
-  reservation_read:
+  reservationRead:
     build:
       context: ./apps/ReservationService
       dockerfile: Dockerfile
@@ -113,8 +113,10 @@ services:
       - SPRING_DATA_MONGODB_DATABASE=reservations
       - SPRING_DATA_MONGODB_USERNAME=root
       - SPRING_DATA_MONGODB_PASSWORD=root
+      - SERVICES_TRANSPORT_APIURL=http://transportRead:8080/api/transport/v1/read
+      - SERVICES_HOTEL_APIURL=http://hotelRead:8080/api/transport/v1/read
 
-  reservation_write:
+  reservationWrite:
     build:
       context: ./apps/ReservationService
       dockerfile: Dockerfile
@@ -135,7 +137,7 @@ services:
       - SPRING_DATA_MONGODB_USERNAME=root
       - SPRING_DATA_MONGODB_PASSWORD=root
 
-  hotel_write:
+  hotelWrite:
     build:
       context: ./apps/hotel/Hotel.Writer
       dockerfile: Dockerfile

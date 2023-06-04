@@ -40,7 +40,7 @@ services:
       - "5672:5672"
       - "15672:15672"
 
-  transport_read:
+  transportRead:
     image: bartoszdab/rsww-transport-read
     container_name: 'rsww_transport_read'
     deploy:
@@ -63,7 +63,7 @@ services:
       - SPRING_FLYWAY_USER=root
       - SPRING_FLYWAY_PASSWORD=root
 
-  transport_write:
+  transportWrite:
     image: bartoszdab/rsww-transport-write
     container_name: 'rsww_transport_write'
     deploy:
@@ -86,7 +86,7 @@ services:
       - SPRING_FLYWAY_USER=root
       - SPRING_FLYWAY_PASSWORD=root
 
-  payment-read:
+  paymentRead:
     image: bartoszdab/rsww-payment-read
     container_name: 'rsww_payment'
     deploy:
@@ -104,7 +104,7 @@ services:
       - SPRING_RABBITMQ_USERNAME=guest
       - SPRING_RABBITMQ_PASSWORD=guest
 
-  reservation_read:
+  reservationRead:
     image: bartoszdab/rsww-reservation-read
     container_name: 'rsww_reservation_read'
     deploy:
@@ -126,8 +126,10 @@ services:
       - SPRING_DATA_MONGODB_DATABASE=reservations
       - SPRING_DATA_MONGODB_USERNAME=root
       - SPRING_DATA_MONGODB_PASSWORD=root
+      - SERVICES_TRANSPORT_APIURL=http://transportRead:8080/api/transport/v1/read
+      - SERVICES_HOTEL_APIURL=http://hotelRead:8080/api/transport/v1/read
 
-  reservation_write:
+  reservationWrite:
     image: bartoszdab/rsww-reservation-write
     container_name: 'rsww_reservation_write'
     deploy:
@@ -151,7 +153,7 @@ services:
       - SPRING_DATA_MONGODB_PASSWORD=root
 
 
-  hotel_write:
+  hotelWrite:
     image: bartoszdab/rsww-hotel-write
     container_name: 'rsww_hotel_write'
     #image: nazwa_obrazu
