@@ -60,7 +60,7 @@ export default {
   
     this.hotelCallInterval = setInterval(() => {
       this.fetchHotelEvents();
-    }, 1000000);
+    }, 1000);
     
     this.transportCallInterval = setInterval(() => {
       this.fetchTransportEvents();

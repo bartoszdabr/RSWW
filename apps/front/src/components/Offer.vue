@@ -101,17 +101,17 @@ export default {
 
     this.hotelCallInterval = setInterval(() => {
       this.fetchHotelData();
-    }, 10000000);
+    }, 1000);
 
     this.transportCallInterval = setInterval(() => {
       this.fetchTransportData();
-    }, 1000000);
+    }, 1000);
     this.imageCallInterval = setInterval(() => {
       this.slideImage();
-    }, 2000000);
+    }, 2000);
     this.purchaseCallInterval = setInterval(() => {
       this.lookForNewPurchase();
-    }, 2000000);
+    }, 1000);
   },
   beforeDestroy() {
     clearInterval(this.hotelCallInterval);
