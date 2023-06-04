@@ -37,6 +37,7 @@ services:
       - "15672:15672"
 
   transportRead:
+    image: transport_read
     build:
       context: ./apps/transport
       dockerfile: Dockerfile
@@ -58,6 +59,7 @@ services:
       - SPRING_FLYWAY_PASSWORD=root
 
   transportWrite:
+    image: transport_write
     build:
       context: ./apps/transport
       dockerfile: Dockerfile
@@ -79,6 +81,7 @@ services:
       - SPRING_FLYWAY_PASSWORD=root
 
   paymentRead:
+    image: payment_read
     build:
       context: ./apps/PaymentService
       dockerfile: Dockerfile
@@ -94,6 +97,7 @@ services:
       - SPRING_RABBITMQ_PASSWORD=guest
 
   reservationRead:
+    image: reservation_read
     build:
       context: ./apps/ReservationService
       dockerfile: Dockerfile
@@ -115,8 +119,10 @@ services:
       - SPRING_DATA_MONGODB_PASSWORD=root
       - SERVICES_TRANSPORT_APIURL=http://transportRead:8080/api/transport/v1/read
       - SERVICES_HOTEL_APIURL=http://hotelRead:8080/api/transport/v1/read
+      - SPRING_PROFILES_ACTIVE=mock
 
   reservationWrite:
+    image: reservation_write
     build:
       context: ./apps/ReservationService
       dockerfile: Dockerfile
@@ -138,6 +144,7 @@ services:
       - SPRING_DATA_MONGODB_PASSWORD=root
 
   hotelWrite:
+    image: hotel_write
     build:
       context: ./apps/hotel/Hotel.Writer
       dockerfile: Dockerfile
@@ -156,5 +163,7 @@ services:
       context: ./apps/front
       dockerfile: Dockerfile
     restart: always
+    environment:
+      - VUE_APP_BACKEND_URL="http://localhost:81"
     ports:
       - "9013:8080"

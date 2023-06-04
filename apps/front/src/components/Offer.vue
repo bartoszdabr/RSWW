@@ -86,7 +86,9 @@ export default {
         purchaseMessage: '',
         lastPurchaseTimestamp: '2000-01-01T20:37:24.670918Z',
         reservationStatus: '',
-        peoples: {}
+        peoples: {},
+        fromDate: '2000-01-01',
+        toDate: '2000-01-01'
     }
   },
   mounted() {
@@ -106,10 +108,10 @@ export default {
     }, 1000000);
     this.imageCallInterval = setInterval(() => {
       this.slideImage();
-    }, 2000);
+    }, 2000000);
     this.purchaseCallInterval = setInterval(() => {
       this.lookForNewPurchase();
-    }, 2000);
+    }, 2000000);
   },
   beforeDestroy() {
     clearInterval(this.hotelCallInterval);
@@ -129,6 +131,8 @@ export default {
           this.description = response.data.description;
           this.tags = response.data.tags;
           this.freePlaces = response.data.numberOfGuestsInAllRoom;
+          this.fromDate = response.data.fromDate;
+          this.toDate = response.data.toDate;
         })
         .catch(error => {
           console.error(error);
@@ -149,12 +153,19 @@ export default {
         });
     },
     lookForNewPurchase() {
-        //make api call
 
+        const url = `${getBackendUrl()}/api/reservations/v1/read/notifications?hotelId=${this.hotelId}&transportId=${this.transportId}`;
+
+        let newPurchaseTimestamp; 
+        axios.get(url)
+        .then(response => {
+          newPurchaseTimestamp  = response.data.timestamp;
+        })
+        .catch(error => {
+          console.error(error);
+        });
 
         this.purchaseMessage = '';
-        //mock value
-        let newPurchaseTimestamp = '2000-01-01T21:37:24.670918Z';
 
         const lastPurchaseDate = new Date(this.lastPurchaseTimestamp);
         const newPurchaseDate = new Date(newPurchaseTimestamp);
@@ -172,19 +183,31 @@ export default {
       this.$router.push({ name: 'OfferHistory', query: { hotelId: this.hotelId, transportId: this.transportId} });
     },
     orderOffer() {
+      
+      const startDateObj = new Date(this.fromDate);
+      const endDateObj = new Date(this.toDate);
+
+      // Calculate the difference in milliseconds
+      const diffInMs = Math.abs(endDateObj - startDateObj);
+
+      // Convert milliseconds to days
+      const days = Math.ceil(diffInMs / (1000 * 60 * 60 * 24));
+
+      console.log(days);
+
       this.reservationStatus = '';
-      const apiUrl = `${getBackendUrl}/api/reservations/v1/write/add`;
+      const apiUrl = `${getBackendUrl()}/api/reservations/v1/write/reservations`;
       const requestBody =  {
         username: sessionStorage.getItem('username'),
         transportId: this.transportId,
-        reservationId: this.hotelId,  
+        roomReservationId: this.hotelId,  
         ageGroupsSize: {
           lessThan3YearsOld: this.peoples.numberOfChildren3,
           lessThan10YearsOld: this.peoples.numberOfChildren10,
           lessThan18YearsOld: this.peoples.numberOfChildren18,
           adult: this.peoples.numberOfAdults
         },
-        cost: 0
+        numOfDays: days
       }
       axios.post(apiUrl, requestBody)
       .then(response => {

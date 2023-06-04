@@ -162,11 +162,16 @@ export default {
       }
     },
     makeApiRequest(queryParams) {
-      const apiUrl = `${getBackendUrl()}?${toQueryString(queryParams)}`;
+      const apiUrl = `${getBackendUrl()}/api/reservations/v1/read/offers?${toQueryString(queryParams)}`;
       console.log(apiUrl);
-
-      let mock = '[{"hotelId":"123","name":"hotelName","rating":0,"stars":0,"location":"Turcja","startDate":"2023-06-02","endDate":"2023-06-02","numOfPeople":0,"transports":[{"id":"02050f21-7561-4e12-ac59-e3c9b80cbed5","sourcePlace":"string","destinationPlace":"string","date":"2023-06-02","availableSeats":0},{"id":"transport2","sourcePlace":"string","destinationPlace":"string","date":"2023-06-02","availableSeats":0}],"cost":0}]';
-      this.offers = JSON.parse(mock);
+      axios.get(apiUrl)
+        .then(response => {
+          console.log(response.data);
+            this.offers = response.data;
+        })
+        .catch(error => {
+          console.error(error);
+        });
 
       console.log(this.offers);
     }
