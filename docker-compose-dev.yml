@@ -119,7 +119,6 @@ services:
       - SPRING_DATA_MONGODB_PASSWORD=root
       - SERVICES_TRANSPORT_APIURL=http://transportRead:8080/api/transport/v1/read
       - SERVICES_HOTEL_APIURL=http://hotelRead:8080/api/transport/v1/read
-      - SPRING_PROFILES_ACTIVE=mock
 
   reservationWrite:
     image: reservation_write
