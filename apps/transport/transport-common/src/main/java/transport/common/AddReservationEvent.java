@@ -9,5 +9,5 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 public class AddReservationEvent extends BaseEvent {
   private String userName;
-  private Long numberOfPeople;
+  private int numberOfPeople;
 }

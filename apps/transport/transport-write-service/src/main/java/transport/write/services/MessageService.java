@@ -7,7 +7,6 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import transport.common.BaseEvent;
-import transport.write.messaging.ResponseMessage;
 
 @Service
 @RequiredArgsConstructor
@@ -30,7 +29,7 @@ public class MessageService {
     log.info("Sending transport event to bus succeeded");
   }
 
-  public void sendResponse(ResponseMessage response) {
+  public void sendResponse(String response) {
     log.info("Sending transport reservation status to bus");
     rabbitTemplate.convertAndSend(DEFAULT_EXCHANGE_NAME, reservationQueueName, response);
     log.info("Sending transport reservation status to bus succeeded");
