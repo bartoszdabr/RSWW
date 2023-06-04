@@ -9,6 +9,6 @@ public interface HotelRepository {
     Optional<HotelResponseModel> findHotels(
             Optional<LocalDate> startDate,
             Optional<LocalDate> endDate,
-            Optional<Integer> numOfPeople,
+            Integer numOfPeople,
             Optional<String> destinationLocation);
 }

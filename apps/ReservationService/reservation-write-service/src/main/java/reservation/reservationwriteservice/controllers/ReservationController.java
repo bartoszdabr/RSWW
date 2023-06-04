@@ -30,15 +30,4 @@ public class ReservationController {
                 .ok()
                 .build();
     }
-
-    @DeleteMapping("remove")
-    public ResponseEntity<Void> removeReservation(@RequestBody RemoveReservation removeReservation) {
-        log.info("New reservation event request");
-        eventService.removeReservation(removeReservation);
-
-        log.info("Reservation event request succeeded");
-        return ResponseEntity
-                .ok()
-                .build();
-    }
 }
