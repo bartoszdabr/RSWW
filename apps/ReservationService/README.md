@@ -29,4 +29,15 @@ To find offers make a `GET` call on `/api/reservations/v1/read` with following s
 
 Example call: `/api/reservations/v1/read/offers?startLocation=Katowice&destinationLocation=Grecja&startDate=2023-05-31&endDate=2023-06-11&adults=2&under10YearsOld=1`
 
+To check if any reservation for current offer was made make a `GET` request on `/api/reservations/v1/read/notifications` with the following parameters:
+- hotelId - string with hotel id to check
+- transportId - string with transport id to check 
 
+Example call: `/api/reservations/v1/read/notifications?hotelId=4a94f53c-38c6-423d-9ea9-96873cf335d4&transportId=4a94f53c-38c6-423d-9ea9-96873cf335d3`
+
+Example response
+```json
+{
+  "timestamp": "2023-06-09T11:01:09.991Z"
+}
+```
