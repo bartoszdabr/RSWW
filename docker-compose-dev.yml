@@ -163,7 +163,5 @@ services:
       context: ./apps/front
       dockerfile: Dockerfile
     restart: always
-    environment:
-      - VUE_APP_BACKEND_URL="http://localhost:81"
     ports:
       - "9013:8080"
