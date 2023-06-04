@@ -5,8 +5,8 @@ Send message in the following format to make reservation. Default queue = `trans
 {
 "id":"reservationId",
 "transportId":"transportId",
-"userName":"abc",
-"numberOfPeople":2,
+"username":"abc",
+"numOfPeople":2,
 "type":"add or ADD"
 }
 
@@ -17,8 +17,8 @@ Send message in the following format cancel reservation.  Default queue = `trans
 {
   "id":"abc",
   "transportId":"transportId",
-  "userName":"abc",
-  "numberOfPeople":2,
+  "username":"abc",
+  "numOfPeople":2,
   "type":"cancel or CANCEL"
 }
 ```

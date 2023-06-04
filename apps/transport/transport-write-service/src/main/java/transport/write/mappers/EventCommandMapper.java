@@ -19,8 +19,8 @@ public class EventCommandMapper {
         .eventId(UUID.randomUUID().toString())
         .timeStamp(Instant.now())
         .transportId(command.getTransportId())
-        .numberOfPeople(command.getNumberOfPeople())
-        .userName(command.getUserName())
+        .numberOfPeople(command.getNumOfPeople())
+        .userName(command.getUsername())
         .build();
   }
 

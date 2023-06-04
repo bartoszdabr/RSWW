@@ -1,8 +1,5 @@
 package transport.write.services;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -13,57 +10,57 @@ import transport.write.commands.CancelReservationCommand;
 import transport.write.messaging.MessageType;
 import transport.write.messaging.ResponseMessage;
 import transport.write.messaging.ResponseMessageStatus;
+import transport.write.model.SagaMessage;
 
 @Component
 @AllArgsConstructor
 public class MessageListenerService {
-  private final ObjectMapper objectMapper;
   private final TransportService transportService;
   private final MessageService messageService;
   private final Logger log = LogManager.getLogger(this.getClass());
 
-  // TODO: Refactor this
   @RabbitListener(queues = "${rabbitmq.transport.queueName}")
-  public void receivedMessage(String message) {
+  public void receivedMessage(SagaMessage message) {
     log.info("Received new message: %s".formatted(message));
-    try {
-      JsonNode jsonNode = objectMapper.readTree(message);
-      MessageType type = getMessageType(message);
+    MessageType type = MessageType.valueOf(message.getType());
 
-      switch (type) {
-        case ADD -> handleAddReservationMessage(jsonNode);
-        case CANCEL -> handleCancelReservationMessage(jsonNode);
-      }
-    } catch (JsonProcessingException e) {
-      log.error("Error occurred while reading/converting message: ", e);
+    switch (type) {
+      case ADD -> handleAddReservationMessage(message);
+      case CANCEL -> handleCancelReservationMessage(message);
     }
   }
 
-  private MessageType getMessageType(String message) throws JsonProcessingException {
-    JsonNode jsonNode = objectMapper.readTree(message);
-    return MessageType.valueOf(jsonNode.get("type").asText().toUpperCase());
-  }
-
-  private void handleAddReservationMessage(JsonNode jsonNode) throws JsonProcessingException {
-    AddReservationCommand command = objectMapper.treeToValue(jsonNode, AddReservationCommand.class);
-    ResponseMessage response =
-        ResponseMessage.builder()
+  private void handleAddReservationMessage(SagaMessage message) {
+    var command = AddReservationCommand
+            .builder()
+            .id(message.getReservationId())
+            .transportId(message.getTransportId())
+            .username(message.getUsername())
+            .numOfPeople(message.getNumOfPeople())
+            .build();
+    var response = ResponseMessage.builder()
             .id(command.getId())
             .status(ResponseMessageStatus.SUCCEEDED)
             .build();
+
     try {
       transportService.makeReservation(command);
     } catch (Exception e) {
       log.error(e);
       response.setStatus(ResponseMessageStatus.FAILURE);
     } finally {
-      messageService.sendResponse(objectMapper.writeValueAsString(response));
+      messageService.sendResponse(response);
     }
   }
 
-  private void handleCancelReservationMessage(JsonNode jsonNode) throws JsonProcessingException {
-    CancelReservationCommand command =
-        objectMapper.treeToValue(jsonNode, CancelReservationCommand.class);
+  private void handleCancelReservationMessage(SagaMessage message) {
+    var command = CancelReservationCommand
+            .builder()
+            .id(message.getReservationId())
+            .transportId(message.getTransportId())
+            .userName(message.getUsername())
+            .numberOfPeople(message.getNumOfPeople())
+            .build();
     try {
       transportService.cancelReservation(command);
     } catch (Exception e) {
