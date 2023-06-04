@@ -61,7 +61,7 @@ public class SagaRollbackService {
                 .eventId(reservationEvent.getReservationId())
                 .username(reservationEvent.getUsername())
                 .roomReservationId(reservationEvent.getRoomReservationId())
-                .ageGroups(reservationEvent.getAgeGroupsSize())
+                .numOfPeople(reservationEvent.getNumOfPeople())
                 .type(ReservationType.CANCEL.getText())
                 .build();
 
