@@ -53,6 +53,9 @@
   <div>
     <h1 v-if="purchaseMessage">{{ purchaseMessage }}</h1>
   </div>
+  <div>
+    <h1 v-if="reservationStatus">{{ reservationStatus }}</h1>
+  </div>
 </div>
 
 
@@ -61,7 +64,7 @@
 <script>
 import {getBackendUrl} from './utils.js';
 import axios from 'axios';
-
+import { v4 as uuidv4 } from 'uuid';
 
 export default {
   data() {
@@ -96,11 +99,11 @@ export default {
 
     this.hotelCallInterval = setInterval(() => {
       this.fetchHotelData();
-    }, 1000);
+    }, 10000000);
 
     this.transportCallInterval = setInterval(() => {
       this.fetchTransportData();
-    }, 1000);
+    }, 1000000);
     this.imageCallInterval = setInterval(() => {
       this.slideImage();
     }, 2000);
@@ -169,8 +172,28 @@ export default {
       this.$router.push({ name: 'OfferHistory', query: { hotelId: this.hotelId, transportId: this.transportId} });
     },
     orderOffer() {
-      //make api call
-
+      this.reservationStatus = '';
+      const apiUrl = `${getBackendUrl}/api/reservations/v1/write/add`;
+      const requestBody =  {
+        username: sessionStorage.getItem('username'),
+        transportId: this.transportId,
+        reservationId: this.hotelId,  
+        ageGroupsSize: {
+          lessThan3YearsOld: this.peoples.numberOfChildren3,
+          lessThan10YearsOld: this.peoples.numberOfChildren10,
+          lessThan18YearsOld: this.peoples.numberOfChildren18,
+          adult: this.peoples.numberOfAdults
+        },
+        cost: 0
+      }
+      axios.post(apiUrl, requestBody)
+      .then(response => {
+        this.reservationStatus = 'The offer has been successfully purchased';
+      })
+      .catch(error => {
+        this.reservationStatus = 'Given offer cannot be purached. Please try again or choose different offer';
+        console.error(error);
+      });
     }
   }
 }
