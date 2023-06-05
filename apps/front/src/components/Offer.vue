@@ -88,7 +88,8 @@ export default {
         reservationStatus: '',
         peoples: {},
         fromDate: '2000-01-01',
-        toDate: '2000-01-02'
+        toDate: '2000-01-02',
+        sagaInterval: null
     }
   },
   mounted() {
@@ -118,6 +119,9 @@ export default {
     clearInterval(this.transportCallInterval);
     clearInterval(this.imageCallInterval);
     clearInterval(this.purchaseCallInterval);
+    if (this.sagaInterval !== null) {
+      clearInterval(this.sagaInterval);
+    }
   },
   methods: {
     fetchHotelData() {
@@ -215,12 +219,41 @@ export default {
       axios.post(apiUrl, requestBody)
       .then(response => {
         console.log('success');
-        this.reservationStatus = 'The offer has been successfully purchased';
-      })
+        this.reservationStatus = 'Start of a new offer reservation.';
+        this.sagaInterval = setInterval(() => {
+          this.lookForNewPurchase();
+          }, 500);
+          }
+        )
       .catch(error => {
         this.reservationStatus = 'Given offer cannot be purached. Please try again or choose different offer';
         console.error(error);
       });
+    },
+    checkReservationStatus() {
+      const apiUrl = `${getBackendUrl()}/api/reservations/v1/read/saga/status?hotelId=${this.hotelId}&transportId=${this.transportId}`;
+      axios.get(url)
+        .then(response => {
+          const status = response.data.status;
+          if (status == NEW) {
+            this.reservationStatus = 'Start of a new offer reservation.';
+          } else if (status == HOTEL_CONFIRMED) {
+            this.reservationStatus = 'Hotel was confirmed.'
+          } else if (status == TRANSPORT_CONFIRMED) {
+            this.reservationStatus = 'Transport was confirmed.'
+          } else if (status == RESERVED) {
+            this.reservationStatus = 'Happy vacations. Offer was sucesfully purchased.'
+            clearInterval(this.sagaInterval);
+          } else if (status == REMOVED) {
+            this.reservationStatus = 'Unfortunately given offer could not be booked.'
+            clearInterval(this.sagaInterval);
+          }
+        })
+        .catch(error => {
+          console.error(error);
+          clearInterval(this.sagaInterval);
+          this.reservationStatus = 'Unfortunately given offer could not be booked.'
+        });
     }
   }
 }
