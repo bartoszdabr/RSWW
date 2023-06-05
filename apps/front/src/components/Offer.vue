@@ -88,7 +88,7 @@ export default {
         reservationStatus: '',
         peoples: {},
         fromDate: '2000-01-01',
-        toDate: '2000-01-01'
+        toDate: '2000-01-02'
     }
   },
   mounted() {
@@ -101,17 +101,17 @@ export default {
 
     this.hotelCallInterval = setInterval(() => {
       this.fetchHotelData();
-    }, 1000);
+    }, 100000);
 
     this.transportCallInterval = setInterval(() => {
       this.fetchTransportData();
-    }, 1000);
+    }, 100000);
     this.imageCallInterval = setInterval(() => {
       this.slideImage();
     }, 2000);
     this.purchaseCallInterval = setInterval(() => {
       this.lookForNewPurchase();
-    }, 1000);
+    }, 100000);
   },
   beforeDestroy() {
     clearInterval(this.hotelCallInterval);
@@ -156,7 +156,7 @@ export default {
 
         const url = `${getBackendUrl()}/api/reservations/v1/read/notifications?hotelId=${this.hotelId}&transportId=${this.transportId}`;
 
-        let newPurchaseTimestamp; 
+        let newPurchaseTimestamp;
         axios.get(url)
         .then(response => {
           newPurchaseTimestamp  = response.data.timestamp;
@@ -183,7 +183,7 @@ export default {
       this.$router.push({ name: 'OfferHistory', query: { hotelId: this.hotelId, transportId: this.transportId} });
     },
     orderOffer() {
-      
+
       const startDateObj = new Date(this.fromDate);
       const endDateObj = new Date(this.toDate);
 
@@ -193,14 +193,12 @@ export default {
       // Convert milliseconds to days
       const days = Math.ceil(diffInMs / (1000 * 60 * 60 * 24));
 
-      console.log(days);
-
       this.reservationStatus = '';
       const apiUrl = `${getBackendUrl()}/api/reservations/v1/write/reservations`;
       const requestBody =  {
         username: sessionStorage.getItem('username'),
         transportId: this.transportId,
-        roomReservationId: this.hotelId,  
+        roomReservationId: this.hotelId,
         ageGroupsSize: {
           lessThan3YearsOld: this.peoples.numberOfChildren3,
           lessThan10YearsOld: this.peoples.numberOfChildren10,
