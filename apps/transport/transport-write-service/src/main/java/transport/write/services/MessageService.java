@@ -31,7 +31,10 @@ public class MessageService {
 
   public void sendResponse(String response) {
     log.info("Sending transport reservation status to bus");
-    rabbitTemplate.convertAndSend(DEFAULT_EXCHANGE_NAME, reservationQueueName, response);
+    rabbitTemplate.convertAndSend(DEFAULT_EXCHANGE_NAME, reservationQueueName, response,  r -> {
+      r.getMessageProperties().getHeaders().put("content_type", "application/json");
+      return r;
+    });
     log.info("Sending transport reservation status to bus succeeded");
   }
 }
