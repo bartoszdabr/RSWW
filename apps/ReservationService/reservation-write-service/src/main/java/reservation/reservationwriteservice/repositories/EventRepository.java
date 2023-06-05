@@ -12,7 +12,7 @@ import java.util.Optional;
 @Repository
 public interface EventRepository extends MongoRepository<ReservationEvent, String> {
 
-    @Query("{'_id': ?0, 'status': ?1}")
+    @Query("{'reservationId': ?0, 'status': ?1}")
     Optional<ReservationEvent> findFinishedReservationById(String eventId, String status);
 
     @Query("{reservationId: '?0'}")
