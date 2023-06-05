@@ -7,14 +7,13 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import reservation.events.ReservationStatuses;
 import reservation.reservationwriteservice.repositories.EventRepository;
-import reservation.reservationwriteservice.services.EventService;
 import reservation.reservationwriteservice.services.SagaRollbackService;
 
 @Component
 @AllArgsConstructor
 public class TimeoutTask {
 
-    private final Logger log = LogManager.getLogger(EventService.class);
+    private final Logger log = LogManager.getLogger(TimeoutTask.class);
 
     private final EventRepository eventRepository;
 
