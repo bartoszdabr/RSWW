@@ -1,13 +1,16 @@
 package reservation.reservationreadservice.models;
 
-import lombok.Builder;
-import lombok.Getter;
+import lombok.*;
 
 import java.util.List;
 
 @Builder
 @Getter
+@NoArgsConstructor
+@Setter
+@AllArgsConstructor
+@RequiredArgsConstructor
 public class HotelResponseModel {
 
-    private final List<HotelOfferModel> availableHotels;
+    private List<HotelOfferModel> availableHotels;
 }
