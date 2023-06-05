@@ -177,8 +177,6 @@ export default {
         .catch(error => {
           console.error(error);
         });
-
-      console.log(this.offers);
     }
   },
 };
