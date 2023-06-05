@@ -146,9 +146,7 @@ export default {
         numOfPeople +=  parseInt(this.numberOfChildren18);
       }
 
-      if(numOfPeople>0) {
-        queryParams.numOfPeople = numOfPeople;
-      }
+    
 
       if(numOfPeople<=0) {
         this.errorMessage = 'Please specify valid number of people';
@@ -163,6 +161,10 @@ export default {
         if (isNaN(this.peoples.numberOfAdults) || isNaN(this.peoples.numberOfChildren3) || isNaN(this.peoples.numberOfChildren10) || isNaN(this.peoples.numberOfChildren18)) {
           this.errorMessage = 'Please specify valid number of people';
         } else {
+          queryParams.adults =  parseInt(this.numberOfAdults);
+          queryParams.under3YearsOld = parseInt(this.numberOfChildren3);
+          queryParams.under10YearsOld = parseInt(this.numberOfChildren10);
+          queryParams.under18YearsOld = parseInt(this.numberOfChildren18);
         this.makeApiRequest(queryParams);
         }
       }
