@@ -4,7 +4,7 @@
     <div id="image-slider" class="carousel slide pt-4" data-ride="carousel">
       <div class="carousel-inner">
         <div v-for="(image, index) in imageLinks" :key="index" :class="{ 'carousel-item': true, 'active': index === currentImage }">
-          <img :src="image" class="d-block w-100" alt="Slider Image">
+          <img :src="image" class="d-block w-100" alt="Slider Image" :style="{'max-width': '1200px', 'max-height': '450px'}">
         </div>
       </div>
       <a class="carousel-control-prev" href="#image-slider" role="button" data-slide="prev">
@@ -29,6 +29,12 @@
       <div class="button-group mt-4">
         <button class="btn btn-primary" @click="showOfferHistory">Show Offer History</button>
         <button class="btn btn-success" @click="orderOffer">Order Offer</button>
+      </div>   
+      <div>
+        <h1 v-if="purchaseMessage">{{ purchaseMessage }}</h1>
+      </div>
+      <div>
+        <h1 v-if="reservationStatus">{{ reservationStatus }}</h1>
       </div>
     </div>
     <div class="col">
@@ -49,12 +55,6 @@
       <h4>Free places: {{ freePlaces }}</h4>
       </div>
     </div>
-  </div>
-  <div>
-    <h1 v-if="purchaseMessage">{{ purchaseMessage }}</h1>
-  </div>
-  <div>
-    <h1 v-if="reservationStatus">{{ reservationStatus }}</h1>
   </div>
 </div>
 
@@ -121,9 +121,10 @@ export default {
   },
   methods: {
     fetchHotelData() {
-      const url = `${getBackendUrl()}/api/hotel/v1/read/hotel/${this.hotelId}`;
-        axios.get(url)
+      const url = `${getBackendUrl()}/api/hotels/v1/hotels/${this.hotelId}`;
+      axios.get(url)
         .then(response => {
+          console.log(response.data);
           this.hotelName = response.data.hotelName;
           if (this.imageLinks.length < 1) {
             this.imageLinks = response.data.images;
@@ -133,6 +134,8 @@ export default {
           this.freePlaces = response.data.numberOfGuestsInAllRoom;
           this.fromDate = response.data.fromDate;
           this.toDate = response.data.toDate;
+          this.stars = response.data.stars;
+          this.opinionScone = response.data.opinionScore;
         })
         .catch(error => {
           console.error(error);
@@ -195,7 +198,6 @@ export default {
 
       this.reservationStatus = '';
       const apiUrl = `${getBackendUrl()}/api/reservations/v1/write/reservations`;
-      console.log(this.peoples)
       
       const requestBody =  {
         username: sessionStorage.getItem('username'),
@@ -209,7 +211,7 @@ export default {
         },
         numOfDays: days
       }
-      console.log(requestBody);
+      
       axios.post(apiUrl, requestBody)
       .then(response => {
         console.log('success');
