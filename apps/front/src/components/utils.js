@@ -28,6 +28,5 @@ export function isAuthenticated() {
 }
 
 export function getBackendUrl() {
-  //TODO: inject proxy url via env
-  return 'http://localhost:9010'
+  return process.env.VUE_APP_BACKEND_URL;
 }
