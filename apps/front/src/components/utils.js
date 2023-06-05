@@ -28,5 +28,5 @@ export function isAuthenticated() {
 }
 
 export function getBackendUrl() {
-  return 'localhost:80'
+  return process.env.VUE_APP_BACKEND_URL;
 }
