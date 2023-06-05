@@ -9,7 +9,6 @@ import java.util.List;
 @NoArgsConstructor
 @Setter
 @AllArgsConstructor
-@RequiredArgsConstructor
 public class HotelResponseModel {
 
     private List<HotelOfferModel> availableHotels;
