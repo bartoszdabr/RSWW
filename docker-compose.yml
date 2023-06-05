@@ -36,13 +36,13 @@ services:
     environment:
       - SERVER_PORT=8080
       - SPRING_DATASOURCE_URL=jdbc:postgresql://actina15.maas:5432/transport_read_db
-      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_USERNAME=postgres
       - SPRING_DATASOURCE_PASSWORD=student
       - SPRING_RABBITMQ_HOST=rabbitmq
       - SPRING_RABBITMQ_PORT=5672
       - SPRING_RABBITMQ_USERNAME=guest
       - SPRING_RABBITMQ_PASSWORD=guest
-      - SPRING_FLYWAY_USER=root
+      - SPRING_FLYWAY_USER=postgres
       - SPRING_FLYWAY_PASSWORD=student
 
   transportWrite:
