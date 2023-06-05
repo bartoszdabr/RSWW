@@ -2,16 +2,18 @@
   <div class="container">
     <div class="row">
       <div class="col-md-6">
-        <h2>Top hotels</h2>
+        <h2>Hotels with the greatest interest</h2>
         <table class="table">
           <thead>
             <tr>
               <th>Hotel</th>
+              <th>Count</th>
             </tr>
           </thead>
           <tbody>
             <tr v-for="hotel in topHotels">
-              <td>{{ hotel }}</td>
+              <td>{{ hotel.name }}</td>
+              <td>{{ hotel.count }}</td>
             </tr>
           </tbody>
         </table>
@@ -22,11 +24,13 @@
           <thead>
             <tr>
               <th>Destination</th>
+              <th>Count</th>
             </tr>
           </thead>
           <tbody>
             <tr v-for="destination in topDestinations">
-              <td>{{ destination }}</td>
+              <td>{{ destination.name }}</td>
+              <td>{{ destination.count }}</td>
             </tr>
           </tbody>
         </table>
@@ -61,14 +65,27 @@ export default {
 
   methods: {
     fetchPreferences() {
-      const url = `${getBackendUrl()}/api/hotel/v1/write/preferences`;
+      //fetch hotels
+    
+      const url = `${getBackendUrl()}/api/hotels/v1/read/hotels/top`;
         axios.get(url)
         .then(response => {
-          //handle preferences
+          this.topHotels = response.data;
         })
         .catch(error => {
           console.error(error);
         });
+
+        //fetch directions
+      const directionsUrl = `${getBackendUrl()}/api/hotels/v1/read/destination/top`;
+      axios.get(directionsUrl, header)
+        .then(response => {
+          this.topDestinations = response.data;
+        })
+        .catch(error => {
+          console.error(error);
+      });
+
     }
   }
 };
