@@ -38,13 +38,13 @@ public class EventSender implements ApplicationRunner {
                     rabbitTemplate.convertAndSend(hotelQueueName, eventPayload.addHotelReservation("bd7418f1-5568-4bec-8f14-214da15383e9",
                             "aaa",
                             "647ca7631f72054807f3ad20",
-                            "4"));
+                            4));
                     break;
                 case 2:
                     rabbitTemplate.convertAndSend(transportQueueName, eventPayload.makeTransportReservation("02050f21-7561-4e12-ac59-e3c9b80cbed5",
                             "02050f21-7561-4e12-ac59-e3c9b80cbed5",
                             "aaa",
-                            "2"));
+                            2));
                     break;
                 default:
                     throw new IllegalStateException("Invalid random number: " + randomNum);
