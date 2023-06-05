@@ -4,6 +4,7 @@ using Hotel.Querys.GetAllHotels2;
 using Hotel.Querys.GetHotelById;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using System.Linq;
 
 namespace Hotel.API.Controllers
 {
@@ -45,6 +46,20 @@ namespace Hotel.API.Controllers
                 return NotFound();
 
             return Ok(result);
+        }
+
+        [HttpGet("hotels/ids")]
+        public async Task<IActionResult> GetById3([FromQuery] int? count)
+        {
+            var query = new GetAllHotels2Query() { filter = new HotelFilter()};
+            var result = await _mediator.Send(query);
+
+            if (result == null)
+                return NotFound();
+
+            var select = result.Select(x => x.hotelId).Take(count ?? 100);
+
+            return Ok(select);
         }
     }
 }

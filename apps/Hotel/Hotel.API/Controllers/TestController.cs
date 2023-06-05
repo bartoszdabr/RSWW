@@ -11,7 +11,7 @@ using System.Security.Cryptography;
 
 namespace Hotel.API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/hotels/v1")]
     [ApiController]
     public class TestController : Controller
     {
@@ -43,7 +43,7 @@ namespace Hotel.API.Controllers
             return Ok(entity);
         }
 
-        [HttpPost("api/Test/Init")]
+        [HttpPost("InitData")]
         public async Task<ObjectResult> ZrobCos()
         {
             //
