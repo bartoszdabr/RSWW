@@ -4,9 +4,13 @@ services:
 
   nginx:
     container_name: 'rsww-gateway'
-    build:
-      context: ./apps/Gateway/
-      dockerfile: Dockerfile
+    image: bartoszdab/rsww-gateway
+    deploy:
+      restart_policy:
+        condition: any
+        delay: 10s
+        max_attempts: 5
+        window: 60s
     ports:
       - '18007:80'
 
@@ -109,7 +113,7 @@ services:
       - SPRING_DATA_MONGODB_USERNAME=root
       - SPRING_DATA_MONGODB_PASSWORD=student
       - SERVICES_TRANSPORT_APIURL=http://transportRead:8080/api/transport/v1/read
-      - SERVICES_HOTEL_APIURL=http://hotelRead:8080/api/transport/v1/read
+      - SERVICES_HOTEL_APIURL=http://hotelRead:80/api/hotels/v1/read
 
   reservationWrite:
     image: bartoszdab/rsww-reservation-write
