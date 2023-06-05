@@ -1,9 +1,10 @@
 import os
+
 from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
-from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.support import expected_conditions
+from selenium.webdriver.support.wait import WebDriverWait
 
 DRIVER_PATH = os.getenv("CHROME_DRIVER_PATH")
 URL = os.getenv("SERVICE_URL", "http://localhost:8080")
@@ -23,6 +24,7 @@ class RswwTest:
                            adults=2, childrenUnder3=2, childrenUnder10=0, childrenUnder18=0)
         self.select_offer()
         self.order_offer()
+        self.wait_for_purchase()
         self.driver.close()
 
     def login(self):
@@ -50,6 +52,13 @@ class RswwTest:
 
     def order_offer(self):
         self.driver.find_element(By.XPATH, value='//button[text()="Order Offer"]').click()
+
+    def wait_for_purchase(self):
+        wait = WebDriverWait(driver=self.driver, timeout=65)
+        wait.until(expected_conditions.any_of(
+            expected_conditions.text_to_be_present_in_element((By.TAG_NAME, 'H1'), 'Happy vacations. Offer was sucesfully purchased.'),
+            expected_conditions.text_to_be_present_in_element((By.TAG_NAME, 'H!'), 'Unfortunately given offer could not be booked.')
+        ))
 
 
 def create_chrome_driver() -> webdriver.Chrome:
