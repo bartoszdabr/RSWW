@@ -163,24 +163,24 @@ export default {
 
         const url = `${getBackendUrl()}/api/reservations/v1/read/notifications?hotelId=${this.hotelId}&transportId=${this.transportId}`;
 
+        this.purchaseMessage = '';
+
         let newPurchaseTimestamp;
         axios.get(url)
         .then(response => {
           newPurchaseTimestamp  = response.data.timestamp;
+          const lastPurchaseDate = new Date(this.lastPurchaseTimestamp);
+          const newPurchaseDate = new Date(newPurchaseTimestamp);
+
+          if (newPurchaseDate > lastPurchaseDate) {
+            this.purchaseMessage = 'Someone purchased this offer';
+            this.lastPurchaseTimestamp = newPurchaseTimestamp;
+          }
         })
         .catch(error => {
           console.error(error);
         });
 
-        this.purchaseMessage = '';
-
-        const lastPurchaseDate = new Date(this.lastPurchaseTimestamp);
-        const newPurchaseDate = new Date(newPurchaseTimestamp);
-
-        if (newPurchaseDate > lastPurchaseDate) {
-          this.purchaseMessage = 'Someone purchased this offer';
-          this.lastPurchaseTimestamp = newPurchaseTimestamp;
-        }
     },
     slideImage() {
       this.currentImage += 1;
