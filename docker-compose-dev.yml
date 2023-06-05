@@ -38,6 +38,10 @@ services:
 
   transportRead:
     image: bartoszdab/rsww-transport-read
+#    build:
+#      context: ./apps/transport
+#      dockerfile: Dockerfile
+#      target: transport-read-service-img
     container_name: 'rsww_transport_read'
     restart: always
     ports:
@@ -56,6 +60,10 @@ services:
 
   transportWrite:
     image: bartoszdab/rsww-transport-write
+#    build:
+#      context: ./apps/transport
+#      dockerfile: Dockerfile
+#      target: transport-write-service-img
     container_name: 'rsww_transport_write'
     restart: always
     ports:
@@ -99,7 +107,6 @@ services:
     ports:
       - "9001:8080"
     environment:
-      - spring_profiles_active=mock
       - SERVER_PORT=8080
       - SPRING_RABBITMQ_HOST=rabbitmq
       - SPRING_RABBITMQ_PORT=5672
@@ -111,7 +118,7 @@ services:
       - SPRING_DATA_MONGODB_USERNAME=root
       - SPRING_DATA_MONGODB_PASSWORD=root
       - SERVICES_TRANSPORT_APIURL=http://transportRead:8080/api/transport/v1/read
-      - SERVICES_HOTEL_APIURL=http://hotelRead:8080/api/transport/v1/read
+      - SERVICES_HOTEL_APIURL=http://hotelRead:80/api/hotels/v1/read
 
   reservationWrite:
     image: bartoszdab/rsww-reservation-write
@@ -135,23 +142,35 @@ services:
       - SPRING_DATA_MONGODB_USERNAME=root
       - SPRING_DATA_MONGODB_PASSWORD=root
 
-#  hotelWrite:
-#    image: hotel_write
-#    build:
-#      context: ./apps/hotel/Hotel.Writer
-#      dockerfile: Dockerfile
-#    container_name: 'rsww_hotel_write'
-#    restart: always
-#    environment:
-#      - RabbitMQOptions__HostName=rabbitmq
-#      - RabbitMQOptions__UserName=guest
-#      - RabbitMQOptions__Password=guest
-#      - RabbitMQOptions__Port=5672
-#      - RabbitMQOptions__VirtualHost=/
-#      - RabbitMQOptions__RetryIntervalSeconds=10
+  hotelRead:
+    image: grzegorestyty/rsww-hotel-api:test
+    container_name: 'rsww_hotel_read'
+    restart: always
+    environment:
+      - RabbitMQOptions__HostName=rabbitmq
+      - RabbitMQOptions__UserName=guest
+      - RabbitMQOptions__Password=guest
+      - RabbitMQOptions__Port=5672
+      - RabbitMQOptions__VirtualHost=/
+      - RabbitMQOptions__RetryIntervalSeconds=10
+    ports:
+    - "9017:80"
+
+  hotelEventHandler:
+    image: grzegorestyty/rsww-hotel-eventhandler:test
+    container_name: 'rsww_hotel_event_handler'
+    restart: always
+
+  hotelCommands:
+    image: grzegorestyty/rsww-hotel-commands:test
+    container_name: 'rsww_hotel_commands'
+    restart: always
 
   front:
     image: bartoszdab/rsww-front
+#    build:
+#      context: ./apps/front
+#      dockerfile: Dockerfile
     restart: always
     ports:
       - "9013:8080"

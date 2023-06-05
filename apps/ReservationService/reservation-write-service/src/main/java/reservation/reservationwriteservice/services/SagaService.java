@@ -51,9 +51,12 @@ public class SagaService {
     }
 
     public void processSagaStep(SagaResponse sagaResponse) throws EventNotFoundException,
-            RollbackException, StatusNotKnownException {
+            RollbackException, StatusNotKnownException, RuntimeException {
 
         var events = getAllReservationEventsSorted(sagaResponse.getReservationId());
+        if (events.isEmpty()) {
+            throw new RuntimeException("Reservation not found");
+        }
         var originalEvent = getOriginalEvent(events);
         var latestEvent = events.get(events.size() -1);
 

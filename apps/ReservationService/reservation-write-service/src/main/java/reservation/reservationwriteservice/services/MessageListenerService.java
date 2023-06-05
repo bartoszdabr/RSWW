@@ -23,7 +23,7 @@ public class MessageListenerService {
         log.info("Received new message: %s".formatted(sagaResponse));
         try {
             sagaService.processSagaStep(sagaResponse);
-        } catch (EventNotFoundException | RollbackException | StatusNotKnownException exception) {
+        } catch (EventNotFoundException | RollbackException | StatusNotKnownException | RuntimeException exception) {
             log.error(exception.getMessage());
         }
 
