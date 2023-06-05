@@ -235,16 +235,16 @@ export default {
       axios.get(url)
         .then(response => {
           const status = response.data.status;
-          if (status == NEW) {
+          if (status == 'NEW') {
             this.reservationStatus = 'Start of a new offer reservation.';
-          } else if (status == HOTEL_CONFIRMED) {
+          } else if (status == 'HOTEL_CONFIRMED') {
             this.reservationStatus = 'Hotel was confirmed.'
-          } else if (status == TRANSPORT_CONFIRMED) {
+          } else if (status == 'TRANSPORT_CONFIRMED') {
             this.reservationStatus = 'Transport was confirmed.'
-          } else if (status == RESERVED) {
+          } else if (status == 'RESERVED') {
             this.reservationStatus = 'Happy vacations. Offer was sucesfully purchased.'
             clearInterval(this.sagaInterval);
-          } else if (status == REMOVED) {
+          } else if (status == 'REMOVED') {
             this.reservationStatus = 'Unfortunately given offer could not be booked.'
             clearInterval(this.sagaInterval);
           }
