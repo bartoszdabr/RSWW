@@ -8,6 +8,8 @@ using Hotel.Entity.Filter;
 using MongoDB.Driver;
 using Hotel.Entity.Model;
 using static System.Runtime.InteropServices.JavaScript.JSType;
+using MongoDB.Bson;
+using Hotel.Entity.Dto;
 
 namespace Hotel.MongoDb
 {
@@ -45,6 +47,37 @@ namespace Hotel.MongoDb
 
             var all = await _dbCollection.FindAsync(filter);
             return await all.ToListAsync();
+        }
+
+        public async Task<List<TopDto>> GetTopDestinations(int count)
+        {
+            var pipeline = new[]
+            {
+                new BsonDocument("$group",
+                    new BsonDocument
+                    {
+                        { "_id", "$Destination" },
+                        { "Count", new BsonDocument("$sum", 1) }
+                    }),
+                new BsonDocument("$sort",
+                    new BsonDocument("Count", -1)),
+                new BsonDocument("$limit", count)
+            };
+
+            var result = await _dbCollection.Aggregate<BsonDocument>(pipeline).ToListAsync();
+
+            var topDestinations = new List<TopDto>();
+            foreach (var document in result)
+            {
+                var ele = new TopDto
+                {
+                    Name = document["_id"].AsString,
+                    Count = document["Count"].AsInt32
+                };
+                topDestinations.Add(ele);
+            }
+
+            return topDestinations;
         }
 
         public async Task<HotelEntity> GetById(string id)

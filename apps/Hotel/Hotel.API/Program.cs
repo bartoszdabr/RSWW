@@ -12,6 +12,8 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+
+
 //Mongo
 var configuration = builder.Configuration;
 var mongoDbOptions = configuration.GetSection("MongoDB").Get<MongoDbOptions>();
@@ -33,6 +35,7 @@ builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining(ty
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
+app.UseCors("Access-Control-Allow-Origin");
 
 app.UseSwagger();
 app.UseSwaggerUI();

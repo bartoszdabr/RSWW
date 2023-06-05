@@ -10,6 +10,7 @@ import transport.read.entity.Transport;
 import transport.read.services.TransportService;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -32,13 +33,18 @@ public class TransportController {
       @RequestParam("numOfPeople") Optional<Integer> numOfPeople,
       @RequestParam("date") Optional<LocalDate> date) {
 
-    return ResponseEntity.ok(transportService.findTransports(sourcePlace, destinationPlace, date, numOfPeople));
+    return ResponseEntity.ok(
+        transportService.findTransports(sourcePlace, destinationPlace, date, numOfPeople));
   }
 
   @GetMapping("transports/{id}")
   public ResponseEntity<Transport> getTransport(@PathVariable String id) {
     Optional<Transport> transport = transportService.findTransport(id);
-    return transport.map(ResponseEntity::ok)
-            .orElse(ResponseEntity.notFound().build());
+    return transport.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
+  }
+
+  @GetMapping("transportIds")
+  public ResponseEntity<List<String>> getTransportsIds() {
+    return ResponseEntity.ok(transportService.findAllIds());
   }
 }
