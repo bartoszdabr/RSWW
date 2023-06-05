@@ -78,7 +78,7 @@ export default {
 
         //fetch directions
       const directionsUrl = `${getBackendUrl()}/api/hotels/v1/read/destination/top`;
-      axios.get(directionsUrl, header)
+      axios.get(directionsUrl)
         .then(response => {
           this.topDestinations = response.data;
         })
