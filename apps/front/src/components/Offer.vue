@@ -88,7 +88,7 @@ export default {
         reservationStatus: '',
         peoples: {},
         fromDate: '2000-01-01',
-        toDate: '2000-01-01'
+        toDate: '2000-01-02'
     }
   },
   mounted() {
@@ -156,7 +156,7 @@ export default {
 
         const url = `${getBackendUrl()}/api/reservations/v1/read/notifications?hotelId=${this.hotelId}&transportId=${this.transportId}`;
 
-        let newPurchaseTimestamp; 
+        let newPurchaseTimestamp;
         axios.get(url)
         .then(response => {
           newPurchaseTimestamp  = response.data.timestamp;
@@ -183,7 +183,7 @@ export default {
       this.$router.push({ name: 'OfferHistory', query: { hotelId: this.hotelId, transportId: this.transportId} });
     },
     orderOffer() {
-      
+
       const startDateObj = new Date(this.fromDate);
       const endDateObj = new Date(this.toDate);
 
@@ -193,14 +193,14 @@ export default {
       // Convert milliseconds to days
       const days = Math.ceil(diffInMs / (1000 * 60 * 60 * 24));
 
-      console.log(days);
-
       this.reservationStatus = '';
       const apiUrl = `${getBackendUrl()}/api/reservations/v1/write/reservations`;
+      console.log(this.peoples)
+      
       const requestBody =  {
         username: sessionStorage.getItem('username'),
         transportId: this.transportId,
-        roomReservationId: this.hotelId,  
+        roomReservationId: this.hotelId,
         ageGroupsSize: {
           lessThan3YearsOld: this.peoples.numberOfChildren3,
           lessThan10YearsOld: this.peoples.numberOfChildren10,
@@ -209,8 +209,10 @@ export default {
         },
         numOfDays: days
       }
+      console.log(requestBody);
       axios.post(apiUrl, requestBody)
       .then(response => {
+        console.log('success');
         this.reservationStatus = 'The offer has been successfully purchased';
       })
       .catch(error => {
