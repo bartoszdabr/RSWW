@@ -105,7 +105,7 @@ services:
       - SPRING_RABBITMQ_PASSWORD=guest
       - SPRING_DATA_MONGODB_HOST=actina15.maas
       - SPRING_DATA_MONGODB_PORT=27017
-      - SPRING_DATA_MONGODB_DATABASE=reservations
+      - SPRING_DATA_MONGODB_DATABASE=18007_reservations
       - SPRING_DATA_MONGODB_USERNAME=root
       - SPRING_DATA_MONGODB_PASSWORD=student
       - SERVICES_TRANSPORT_APIURL=http://transportRead:8080/api/transport/v1/read
@@ -130,7 +130,7 @@ services:
       - SPRING_RABBITMQ_PASSWORD=guest
       - SPRING_DATA_MONGODB_HOST=actina15.maas
       - SPRING_DATA_MONGODB_PORT=27017
-      - SPRING_DATA_MONGODB_DATABASE=reservation_events
+      - SPRING_DATA_MONGODB_DATABASE=18007_reservation_events
       - SPRING_DATA_MONGODB_USERNAME=root
       - SPRING_DATA_MONGODB_PASSWORD=student
 
