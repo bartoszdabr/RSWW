@@ -41,3 +41,16 @@ Example response
   "timestamp": "2023-06-09T11:01:09.991Z"
 }
 ```
+
+To check saga status make a `GET` request on `/api/reservations/v1/read/saga/status` with the following parameters:
+- hotelId - string with hotel id to check
+- transportId - string with transport id to check
+
+Example call: `/api/reservations/v1/read/saga/status?hotelId=dupa&transportId=02050f21-7561-4e12-ac59-e3c9b80cbed5`
+
+Example response
+```json
+{
+  "status": "RESERVED"
+}
+```
