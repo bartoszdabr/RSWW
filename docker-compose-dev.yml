@@ -37,11 +37,11 @@ services:
       - "15672:15672"
 
   transportRead:
-#    image: bartoszdab/rsww-transport-read
-    build:
-      context: ./apps/transport
-      dockerfile: Dockerfile
-      target: transport-read-service-img
+    image: bartoszdab/rsww-transport-read
+#    build:
+#      context: ./apps/transport
+#      dockerfile: Dockerfile
+#      target: transport-read-service-img
     container_name: 'rsww_transport_read'
     restart: always
     ports:
@@ -59,11 +59,11 @@ services:
       - SPRING_FLYWAY_PASSWORD=root
 
   transportWrite:
-#    image: bartoszdab/rsww-transport-write
-    build:
-      context: ./apps/transport
-      dockerfile: Dockerfile
-      target: transport-write-service-img
+    image: bartoszdab/rsww-transport-write
+#    build:
+#      context: ./apps/transport
+#      dockerfile: Dockerfile
+#      target: transport-write-service-img
     container_name: 'rsww_transport_write'
     restart: always
     ports:
@@ -81,10 +81,10 @@ services:
       - SPRING_FLYWAY_PASSWORD=root
 
   paymentRead:
-#    image: bartoszdab/rsww-payment-read
-    build:
-      context: ./apps/PaymentService
-      dockerfile: Dockerfile
+    image: bartoszdab/rsww-payment-read
+#    build:
+#      context: ./apps/PaymentService
+#      dockerfile: Dockerfile
     container_name: 'rsww_payment'
     restart: always
     ports:
@@ -97,11 +97,11 @@ services:
       - SPRING_RABBITMQ_PASSWORD=guest
 
   reservationRead:
-#    image: bartoszdab/rsww-reservation-read
-    build:
-      context: ./apps/ReservationService
-      dockerfile: Dockerfile
-      target: reservation-read-service
+    image: bartoszdab/rsww-reservation-read
+#    build:
+#      context: ./apps/ReservationService
+#      dockerfile: Dockerfile
+#      target: reservation-read-service
     container_name: 'rsww_reservation_read'
     restart: always
     ports:
@@ -118,14 +118,14 @@ services:
       - SPRING_DATA_MONGODB_USERNAME=root
       - SPRING_DATA_MONGODB_PASSWORD=root
       - SERVICES_TRANSPORT_APIURL=http://transportRead:8080/api/transport/v1/read
-      - SERVICES_HOTEL_APIURL=http://hotelRead:8080/api/transport/v1/read
+      - SERVICES_HOTEL_APIURL=http://hotelRead:80/api/hotels/v1/read
 
   reservationWrite:
-#    image: bartoszdab/rsww-reservation-write
-    build:
-      context: ./apps/ReservationService
-      dockerfile: Dockerfile
-      target: reservation-write-service
+    image: bartoszdab/rsww-reservation-write
+#    build:
+#      context: ./apps/ReservationService
+#      dockerfile: Dockerfile
+#      target: reservation-write-service
     container_name: 'rsww_reservation_write'
     restart: always
     ports:
@@ -153,6 +153,8 @@ services:
       - RabbitMQOptions__Port=5672
       - RabbitMQOptions__VirtualHost=/
       - RabbitMQOptions__RetryIntervalSeconds=10
+    ports:
+    - "9017:80"
 
   hotelEventHandler:
     image: grzegorestyty/rsww-hotel-eventhandler:test
@@ -165,10 +167,10 @@ services:
     restart: always
 
   front:
-#    image: bartoszdab/rsww-front
-    build:
-      context: ./apps/front
-      dockerfile: Dockerfile
+    image: bartoszdab/rsww-front
+#    build:
+#      context: ./apps/front
+#      dockerfile: Dockerfile
     restart: always
     ports:
       - "9013:8080"
