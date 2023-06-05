@@ -29,7 +29,7 @@
       <div class="button-group mt-4">
         <button class="btn btn-primary" @click="showOfferHistory">Show Offer History</button>
         <button class="btn btn-success" @click="orderOffer">Order Offer</button>
-      </div>   
+      </div>
       <div>
         <h1 v-if="purchaseMessage">{{ purchaseMessage }}</h1>
       </div>
@@ -202,7 +202,7 @@ export default {
 
       this.reservationStatus = '';
       const apiUrl = `${getBackendUrl()}/api/reservations/v1/write/reservations`;
-      
+
       const requestBody =  {
         username: sessionStorage.getItem('username'),
         transportId: this.transportId,
@@ -215,13 +215,13 @@ export default {
         },
         numOfDays: days
       }
-      
+
       axios.post(apiUrl, requestBody)
       .then(response => {
         console.log('success');
         this.reservationStatus = 'Start of a new offer reservation.';
         this.sagaInterval = setInterval(() => {
-          this.lookForNewPurchase();
+          this.checkReservationStatus();
           }, 500);
           }
         )
@@ -231,7 +231,7 @@ export default {
       });
     },
     checkReservationStatus() {
-      const apiUrl = `${getBackendUrl()}/api/reservations/v1/read/saga/status?hotelId=${this.hotelId}&transportId=${this.transportId}`;
+      const url = `${getBackendUrl()}/api/reservations/v1/read/saga/status?hotelId=${this.hotelId}&transportId=${this.transportId}`;
       axios.get(url)
         .then(response => {
           const status = response.data.status;
