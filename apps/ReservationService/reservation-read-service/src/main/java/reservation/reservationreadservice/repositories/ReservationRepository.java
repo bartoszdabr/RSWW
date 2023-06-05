@@ -12,4 +12,7 @@ public interface ReservationRepository extends MongoRepository<ReservationEntity
     Optional<ReservationEntity> findFirstByRoomReservationIdAndTransportIdAndStatusOrderByTimestampDesc(String roomReservationId,
                                                                                                         String transportId,
                                                                                                         String status);
+
+    Optional<ReservationEntity> findFirstByRoomReservationIdAndTransportIdOrderByTimestampDesc(String roomReservationId,
+                                                                                          String transportId);
 }
