@@ -132,13 +132,13 @@ export default {
           })
         } else if (event.type == 0) {
           events.push({
-              message: 'The  room for ' + data.NumberOfGuestsInAllRooms + ' was reserved.',
+              message: 'The  room for was reserved.',
               timestamp: timestamp
           })
 
         } else if (event.type == 2) {
           events.push({
-              message: 'The reservation for room ' + data.NumberOfGuestsInAllRooms + ' was canceled.',
+              message: 'The reservation for room  was canceled.',
               timestamp: timestamp
           })
         }
