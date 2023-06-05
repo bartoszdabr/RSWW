@@ -101,17 +101,17 @@ export default {
 
     this.hotelCallInterval = setInterval(() => {
       this.fetchHotelData();
-    }, 100000);
+    }, 1000);
 
     this.transportCallInterval = setInterval(() => {
       this.fetchTransportData();
-    }, 100000);
+    }, 1000);
     this.imageCallInterval = setInterval(() => {
       this.slideImage();
     }, 2000);
     this.purchaseCallInterval = setInterval(() => {
       this.lookForNewPurchase();
-    }, 100000);
+    }, 1000);
   },
   beforeDestroy() {
     clearInterval(this.hotelCallInterval);
@@ -195,6 +195,8 @@ export default {
 
       this.reservationStatus = '';
       const apiUrl = `${getBackendUrl()}/api/reservations/v1/write/reservations`;
+      console.log(this.peoples)
+      
       const requestBody =  {
         username: sessionStorage.getItem('username'),
         transportId: this.transportId,
@@ -207,8 +209,10 @@ export default {
         },
         numOfDays: days
       }
+      console.log(requestBody);
       axios.post(apiUrl, requestBody)
       .then(response => {
+        console.log('success');
         this.reservationStatus = 'The offer has been successfully purchased';
       })
       .catch(error => {

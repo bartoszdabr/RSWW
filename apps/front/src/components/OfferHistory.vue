@@ -73,7 +73,6 @@ export default {
 
   methods: {
     fetchHotelEvents() {
-      this.formatHotelEvents(JSON.parse(mock));
       const url = `${getBackendUrl()}/api/hotels/v1/read/events/${this.hotelId}`;
         axios.get(url)
         .then(response => {

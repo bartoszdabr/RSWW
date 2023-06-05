@@ -102,18 +102,13 @@ export default {
       numberOfChildren10: 0,
       numberOfChildren18: 0,
       offers: [],
-      errorMessage:''
+      errorMessage:'',
+      peoples: {}
     };
   },
   methods: {
     handleOfferClick(hotelId, transportId) {
-      let peoples = {
-        numberOfAdults: parseInt(this.numberOfAdults),
-        numberOfChildren3: parseInt(this.numberOfChildren3),
-        numberOfChildren10: parseInt(this.numberOfChildren10),
-        numberOfChildren18: parseInt(this.numberOfChildren18)
-      }
-      this.$router.push({ name: 'Offer', query: { hotelId: hotelId, transportId: transportId, data:peoples} });
+      this.$router.push({ name: 'Offer', query: { hotelId: hotelId, transportId: transportId, data:this.peoples} });
     },
     submitForm() {
       const queryParams = {};
@@ -156,9 +151,20 @@ export default {
       }
 
       if(numOfPeople<=0) {
-        this.errorMessage = 'Please specify positive number of people';
+        this.errorMessage = 'Please specify valid number of people';
       } else {
+
+        this.peoples = {
+          numberOfAdults: parseInt(this.numberOfAdults),
+          numberOfChildren3: parseInt(this.numberOfChildren3),
+          numberOfChildren10: parseInt(this.numberOfChildren10),
+          numberOfChildren18: parseInt(this.numberOfChildren18)
+        }
+        if (isNaN(this.peoples.numberOfAdults) || isNaN(this.peoples.numberOfChildren3) || isNaN(this.peoples.numberOfChildren10) || isNaN(this.peoples.numberOfChildren18)) {
+          this.errorMessage = 'Please specify valid number of people';
+        } else {
         this.makeApiRequest(queryParams);
+        }
       }
     },
     makeApiRequest(queryParams) {
@@ -166,7 +172,6 @@ export default {
       console.log(apiUrl);
       axios.get(apiUrl)
         .then(response => {
-          console.log(response.data);
             this.offers = response.data;
         })
         .catch(error => {
