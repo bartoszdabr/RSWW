@@ -73,13 +73,13 @@ export default {
 
   methods: {
     fetchHotelEvents() {
-      const url = `${getBackendUrl()}/api/hotels/v1/read/events/${this.hotelId}`;
+      const url = `${getBackendUrl()}/api/hotels/v1/events/${this.hotelId}`;
         axios.get(url)
         .then(response => {
             this.formatHotelEvents(response.data);
         })
         .catch(error => {
-          console.error(error);
+          console.log(error);
         });
     },
     fetchTransportEvents() {
@@ -89,7 +89,7 @@ export default {
             this.formatTransportEvents(response.data.transportEvents)
         })
         .catch(error => {
-          console.error(error);
+          console.log(error);
         });
     },
 
@@ -122,7 +122,6 @@ export default {
     },
     formatHotelEvents(hotelEvents) {
       let events = []
-      console.log(hotelvents);
       hotelEvents.forEach(event => {
         const timestamp = event.dateTime;
         const data = JSON.parse(event.data);
@@ -133,13 +132,13 @@ export default {
           })
         } else if (event.type == 0) {
           events.push({
-              message: 'The  room for' + data.NumberOfGuestsInAllRooms + ' was reserved.',
+              message: 'The  room for ' + data.NumberOfGuestsInAllRooms + ' was reserved.',
               timestamp: timestamp
           })
 
         } else if (event.type == 2) {
           events.push({
-              message: 'The reservation for room for' + data.NumberOfGuestsInAllRooms + ' was canceled.',
+              message: 'The reservation for room ' + data.NumberOfGuestsInAllRooms + ' was canceled.',
               timestamp: timestamp
           })
         }
