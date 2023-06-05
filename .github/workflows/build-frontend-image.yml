@@ -1,0 +1,21 @@
+name: Build and push frontend image
+
+on:
+  push:
+    branches: [ "main" ]
+    paths:
+    - apps/front/**
+
+jobs:
+
+  build_frontend:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Build and push frontend image
+      env:
+        DOCKER_LOGIN: ${{ secrets.DOCKER_LOGIN }}
+        DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+      run: docker login -u $DOCKER_LOGIN -p $DOCKER_PASSWORD && cd apps/front && docker build -t bartoszdab/rsww-front:latest . && docker push bartoszdab/rsww-front:latest
