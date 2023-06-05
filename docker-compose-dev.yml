@@ -37,11 +37,7 @@ services:
       - "15672:15672"
 
   transportRead:
-    image: transport_read
-    build:
-      context: ./apps/transport
-      dockerfile: Dockerfile
-      target: transport-read-service-img
+    image: bartoszdab/rsww-transport-read
     container_name: 'rsww_transport_read'
     restart: always
     ports:
@@ -59,11 +55,7 @@ services:
       - SPRING_FLYWAY_PASSWORD=root
 
   transportWrite:
-    image: transport_write
-    build:
-      context: ./apps/transport
-      dockerfile: Dockerfile
-      target: transport-write-service-img
+    image: bartoszdab/rsww-transport-write
     container_name: 'rsww_transport_write'
     restart: always
     ports:
@@ -81,10 +73,10 @@ services:
       - SPRING_FLYWAY_PASSWORD=root
 
   paymentRead:
-    image: payment_read
-    build:
-      context: ./apps/PaymentService
-      dockerfile: Dockerfile
+    image: bartoszdab/rsww-payment-read
+#    build:
+#      context: ./apps/PaymentService
+#      dockerfile: Dockerfile
     container_name: 'rsww_payment'
     restart: always
     ports:
@@ -97,16 +89,17 @@ services:
       - SPRING_RABBITMQ_PASSWORD=guest
 
   reservationRead:
-    image: reservation_read
-    build:
-      context: ./apps/ReservationService
-      dockerfile: Dockerfile
-      target: reservation-read-service
+    image: bartoszdab/rsww-reservation-read
+#    build:
+#      context: ./apps/ReservationService
+#      dockerfile: Dockerfile
+#      target: reservation-read-service
     container_name: 'rsww_reservation_read'
     restart: always
     ports:
       - "9001:8080"
     environment:
+      - spring_profiles_active=mock
       - SERVER_PORT=8080
       - SPRING_RABBITMQ_HOST=rabbitmq
       - SPRING_RABBITMQ_PORT=5672
@@ -121,11 +114,11 @@ services:
       - SERVICES_HOTEL_APIURL=http://hotelRead:8080/api/transport/v1/read
 
   reservationWrite:
-    image: reservation_write
-    build:
-      context: ./apps/ReservationService
-      dockerfile: Dockerfile
-      target: reservation-write-service
+    image: bartoszdab/rsww-reservation-write
+#    build:
+#      context: ./apps/ReservationService
+#      dockerfile: Dockerfile
+#      target: reservation-write-service
     container_name: 'rsww_reservation_write'
     restart: always
     ports:
@@ -142,25 +135,23 @@ services:
       - SPRING_DATA_MONGODB_USERNAME=root
       - SPRING_DATA_MONGODB_PASSWORD=root
 
-  hotelWrite:
-    image: hotel_write
-    build:
-      context: ./apps/hotel/Hotel.Writer
-      dockerfile: Dockerfile
-    container_name: 'rsww_hotel_write'
-    restart: always
-    environment:
-      - RabbitMQOptions__HostName=rabbitmq 
-      - RabbitMQOptions__UserName=guest
-      - RabbitMQOptions__Password=guest
-      - RabbitMQOptions__Port=5672
-      - RabbitMQOptions__VirtualHost=/
-      - RabbitMQOptions__RetryIntervalSeconds=10
+#  hotelWrite:
+#    image: hotel_write
+#    build:
+#      context: ./apps/hotel/Hotel.Writer
+#      dockerfile: Dockerfile
+#    container_name: 'rsww_hotel_write'
+#    restart: always
+#    environment:
+#      - RabbitMQOptions__HostName=rabbitmq
+#      - RabbitMQOptions__UserName=guest
+#      - RabbitMQOptions__Password=guest
+#      - RabbitMQOptions__Port=5672
+#      - RabbitMQOptions__VirtualHost=/
+#      - RabbitMQOptions__RetryIntervalSeconds=10
 
   front:
-    build:
-      context: ./apps/front
-      dockerfile: Dockerfile
+    image: bartoszdab/rsww-front
     restart: always
     ports:
       - "9013:8080"

@@ -34,6 +34,7 @@ public class MessageService {
     rabbitTemplate.convertAndSend(DEFAULT_EXCHANGE_NAME, reservationQueueName, response,  r -> {
       r.getMessageProperties().getHeaders().put("content_type", "application/json");
       r.getMessageProperties().setContentEncoding("application/json");
+      r.getMessageProperties().setContentType("application/json");
       return r;
     });
     log.info("Sending transport reservation status to bus succeeded");
