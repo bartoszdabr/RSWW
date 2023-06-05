@@ -17,7 +17,9 @@ import transport.read.filters.TransportWithSourcePlace;
 import transport.read.repositories.TransportsRepository;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class TransportService {
@@ -47,7 +49,10 @@ public class TransportService {
   }
 
   public TransportResponseModel findTransports(
-      Optional<String> sourcePlace, Optional<String> destinationPlace, Optional<LocalDate> date, Optional<Integer> numOfPeople) {
+      Optional<String> sourcePlace,
+      Optional<String> destinationPlace,
+      Optional<LocalDate> date,
+      Optional<Integer> numOfPeople) {
 
     Specification<Transport> specification =
         Specification.where(new TransportWithDestinationPlace(destinationPlace))
@@ -56,8 +61,8 @@ public class TransportService {
             .and(new TransportWithMinSeats(numOfPeople));
 
     return TransportResponseModel.builder()
-            .matchingTransports(transportsRepository.findAll(specification))
-            .build();
+        .matchingTransports(transportsRepository.findAll(specification))
+        .build();
   }
 
   public Optional<Transport> findTransport(String id) {
@@ -74,5 +79,11 @@ public class TransportService {
             .availableSeats(event.getAvailableSeats())
             .build();
     transportsRepository.save(transport);
+  }
+
+  public List<String> findAllIds() {
+    return transportsRepository.findAll().stream()
+        .map(Transport::getId)
+        .collect(Collectors.toList());
   }
 }
