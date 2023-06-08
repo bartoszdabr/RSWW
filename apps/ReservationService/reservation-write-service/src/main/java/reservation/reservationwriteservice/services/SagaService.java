@@ -5,6 +5,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 import reservation.events.*;
 import reservation.reservationwriteservice.exceptions.EventNotFoundException;
 import reservation.reservationwriteservice.exceptions.RollbackException;
@@ -20,6 +21,8 @@ import java.util.UUID;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+
+import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 @Service
 @AllArgsConstructor
@@ -168,6 +171,6 @@ public class SagaService {
     public void processPaymentForReservation(String reservationId) {
         var event = eventRepository.findFirstByReservationIdOrderByTimestampAsc(reservationId);
         initPaymentStep(event
-                .orElseThrow(() -> new RuntimeException("No reservation with id: " + reservationId)));
+                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "No reservation with id: " + reservationId)));
     }
 }
