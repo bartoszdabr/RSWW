@@ -17,4 +17,6 @@ public interface EventRepository extends MongoRepository<ReservationEvent, Strin
 
     @Query("{reservationId: '?0'}")
     List<ReservationEvent> findReservationEventsByReservationIdOrderByTimestamp(String reservationId, Sort sort);
+
+    Optional<ReservationEvent> findFirstByReservationIdOrderByTimestampAsc(String reservationId);
 }

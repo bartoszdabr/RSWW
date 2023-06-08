@@ -74,7 +74,6 @@ public class SagaService {
             }
             case HOTEL_CONFIRMED -> {
                 updateAfterTransportConfirmation(originalEvent);
-                initPaymentStep(originalEvent);
             }
             case TRANSPORT_CONFIRMED -> updateAfterPaymentConfirmation(originalEvent);
             default -> throw new StatusNotKnownException("Not known status for event");
@@ -164,5 +163,11 @@ public class SagaService {
     private List<ReservationEvent> getAllReservationEventsSorted(String reservationId) {
         return eventRepository.findReservationEventsByReservationIdOrderByTimestamp(
                 reservationId, Sort.by(Sort.Direction.ASC, "timestamp"));
+    }
+
+    public void processPaymentForReservation(String reservationId) {
+        var event = eventRepository.findFirstByReservationIdOrderByTimestampAsc(reservationId);
+        initPaymentStep(event
+                .orElseThrow(() -> new RuntimeException("No reservation with id: " + reservationId)));
     }
 }
