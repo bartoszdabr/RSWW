@@ -35,8 +35,6 @@ services:
         delay: 10s
         max_attempts: 5
         window: 60s
-    ports:
-      - "9010:8080"
     environment:
       - SERVER_PORT=8080
       - SPRING_DATASOURCE_URL=jdbc:postgresql://actina15.maas:5432/18007_transport_read_db
@@ -58,8 +56,6 @@ services:
         delay: 10s
         max_attempts: 5
         window: 60s
-    ports:
-      - "9011:8080"
     environment:
       - SERVER_PORT=8080
       - SPRING_DATASOURCE_URL=jdbc:postgresql://actina15.maas:5432/18007_transport_write_db
@@ -81,8 +77,6 @@ services:
         delay: 10s
         max_attempts: 5
         window: 60s
-    ports:
-      - "9012:8080"
     environment:
       - SERVER_PORT=8080
       - SPRING_RABBITMQ_HOST=rabbitmq
@@ -99,8 +93,6 @@ services:
         delay: 10s
         max_attempts: 5
         window: 60s
-    ports:
-      - "9001:8080"
     environment:
       - SERVER_PORT=8080
       - SPRING_RABBITMQ_HOST=rabbitmq
@@ -124,8 +116,6 @@ services:
         delay: 10s
         max_attempts: 5
         window: 60s
-    ports:
-      - "9000:8080"
     environment:
       - SERVER_PORT=8080
       - SPRING_RABBITMQ_HOST=rabbitmq
