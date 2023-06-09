@@ -9,6 +9,7 @@ import reservation.costcalculator.CostCalculator;
 import reservation.costcalculator.CostCalculatorImpl;
 import reservation.reservationwriteservice.models.AddReservation;
 import reservation.reservationwriteservice.models.RemoveReservation;
+import reservation.reservationwriteservice.models.ReservationResponseModel;
 import reservation.reservationwriteservice.repositories.EventRepository;
 import reservation.events.ReservationStatuses;
 
@@ -29,9 +30,10 @@ public class EventService {
 
     private final SagaService sagaService;
 
-    public void addNewReservation(AddReservation addReservation) {
+    public ReservationResponseModel addNewReservation(AddReservation addReservation) {
         log.info("New reservation from user: " + addReservation.username());
         var cost = costCalculator.calculateOfferCost(addReservation.ageGroupsSize(), addReservation.numOfDays());
+        var reservationId = UUID.randomUUID().toString();
         var reservationEvent = ReservationEvent.builder()
                 .eventId(UUID.randomUUID().toString())
                 .ageGroupsSize(addReservation.ageGroupsSize())
@@ -39,7 +41,7 @@ public class EventService {
                 .transportId(addReservation.transportId())
                 .username(addReservation.username())
                 .roomReservationId(addReservation.roomReservationId())
-                .reservationId(UUID.randomUUID().toString())
+                .reservationId(reservationId)
                 .timestamp(Instant.now())
                 .status(ReservationStatuses.NEW.getText())
                 .build();
@@ -49,6 +51,11 @@ public class EventService {
         sendEventToReservationRead(reservationEvent);
 
         sagaService.startSaga(reservationEvent);
+
+        return ReservationResponseModel
+                .builder()
+                .reservationId(reservationId)
+                .build();
     }
 
     private void saveEventToNoSql(ReservationEvent event) {
