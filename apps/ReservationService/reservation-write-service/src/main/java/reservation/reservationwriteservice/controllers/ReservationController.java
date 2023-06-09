@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import reservation.reservationwriteservice.models.AddReservation;
 import reservation.reservationwriteservice.models.RemoveReservation;
+import reservation.reservationwriteservice.models.ReservationResponseModel;
 import reservation.reservationwriteservice.services.EventService;
 
 @RestController
@@ -21,13 +22,11 @@ public class ReservationController {
     private final EventService eventService;
 
     @PostMapping("reservations")
-    public ResponseEntity<Void> addNewReservation(@RequestBody AddReservation addReservation) {
+    public ResponseEntity<ReservationResponseModel> addNewReservation(@RequestBody AddReservation addReservation) {
         log.info("New reservation event request");
-        eventService.addNewReservation(addReservation);
-
+        var reservationResponse = eventService.addNewReservation(addReservation);
         log.info("Reservation event request succeeded");
-        return ResponseEntity
-                .ok()
-                .build();
+        
+        return ResponseEntity.ok(reservationResponse);
     }
 }
