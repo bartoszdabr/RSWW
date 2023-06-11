@@ -36,15 +36,16 @@
       <div>
         <h1 v-if="reservationStatus">{{ reservationStatus }}</h1>
       </div>
-
+      <div>
+        <h1 v-if="paymentMessage">{{ paymentMessage }}</h1>
+      </div>
       <div v-if="timerRunning">
         <div class="progress mt-4">
           <div class="progress-bar" role="progressbar" :style="{ width: progress + '%' }" :aria-valuenow="progress"
             aria-valuemin="0" aria-valuemax="100">
           </div>
         </div>
-          <h2 class="mt-4">{{ minutes }}:{{ seconds }}</h2>
-          <button class="btn btn-primary mt-4" @click="onBuyButtonClick" v-if="hotelConfirmed && transportConfirmed">Buy</button>
+          <button class="btn btn-primary mt-4" @click="makePayment" v-if="hotelConfirmed && transportConfirmed">Buy</button>
       </div>
 
     </div>
@@ -104,7 +105,9 @@ export default {
         hotelConfirmed: false,
         transportConfirmed: false,
         timerInterval: null,
-        timerRunning: false
+        timerRunning: false,
+        progress: 100,
+        paymentMessage: ''
     }
   },
   mounted() {
@@ -143,7 +146,6 @@ export default {
       const url = `${getBackendUrl()}/api/hotels/v1/hotels/${this.hotelId}`;
       axios.get(url)
         .then(response => {
-          console.log(response.data);
           this.hotelName = response.data.hotelName;
           if (this.imageLinks.length < 1) {
             this.imageLinks = response.data.images;
@@ -164,7 +166,6 @@ export default {
         const url = `${getBackendUrl()}/api/transport/v1/read/transports/${this.transportId}`;
         axios.get(url)
         .then(response => {
-          console.log(response.data);
           this.transportAvailableSeats = response.data.availableSeats;
           this.transportDate = response.data.date;
           this.transportSourcePlace = response.data.sourcePlace;
@@ -205,7 +206,10 @@ export default {
       this.$router.push({ name: 'OfferHistory', query: { hotelId: this.hotelId, transportId: this.transportId} });
     },
     reserveOffer() {
-
+      if (this.timerRunning) {
+        return;
+      }
+      this.paymentMessage = '';
       const startDateObj = new Date(this.fromDate);
       const endDateObj = new Date(this.toDate);
 
@@ -264,7 +268,7 @@ export default {
             this.transportConfirmed = true;
             this.reservationStatus = 'Transport was confirmed.'
           } else if (status == 'RESERVED') {
-            this.reservationStatus = 'Offer was sucesfully reserved.'
+            this.reservationStatus = 'The offer was sucesfully purchased.'
           } else if (status == 'REMOVED') {
             this.reservationStatus = 'Unfortunately given offer was not booked.'
           }
@@ -275,6 +279,7 @@ export default {
           }
         })
         .catch(error => {
+          this.stopTimer();
           console.error(error);
           clearInterval(this.sagaInterval);
           this.reservationStatus = 'Unfortunately given offer could not be booked.'
@@ -289,11 +294,11 @@ export default {
 
       axios.post(apiUrl, requestBody)
       .then(response => {
-        this.reservationStatus = 'Payment was successful.'
+        this.paymentMessage = 'Payment was successful.'
         }
       )
       .catch(error => {
-        this.reservationStatus = 'An error occurred during payment. Please try again.';
+        this.paymentMessage = 'An error occurred during payment. Please try again.';
         console.error(error);
       });
     },
@@ -301,6 +306,7 @@ export default {
       let totalTime = 59;
       let currentTime = totalTime;
       this.timerRunning = true;
+      this.progress = 100;
 
       this.timerInterval = setInterval(() => {
         if (currentTime > 0) {
