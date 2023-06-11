@@ -130,7 +130,7 @@ export default {
     }, 2000);
     this.purchaseCallInterval = setInterval(() => {
       this.lookForNewPurchase();
-    }, 1000000);
+    }, 1000);
   },
   beforeDestroy() {
     clearInterval(this.hotelCallInterval);
