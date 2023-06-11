@@ -16,7 +16,7 @@ import reservation.events.ReserveTransportEvent;
 @RequiredArgsConstructor
 public class MessageService {
 
-    Logger log = LogManager.getLogger(MessageService.class);
+    private final Logger log = LogManager.getLogger(MessageService.class);
 
     private final RabbitTemplate rabbitTemplate;
 

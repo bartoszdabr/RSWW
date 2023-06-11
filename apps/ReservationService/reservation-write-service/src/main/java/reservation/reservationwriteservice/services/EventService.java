@@ -8,7 +8,6 @@ import reservation.events.ReservationEvent;
 import reservation.costcalculator.CostCalculator;
 import reservation.costcalculator.CostCalculatorImpl;
 import reservation.reservationwriteservice.models.AddReservation;
-import reservation.reservationwriteservice.models.RemoveReservation;
 import reservation.reservationwriteservice.models.ReservationResponseModel;
 import reservation.reservationwriteservice.repositories.EventRepository;
 import reservation.events.ReservationStatuses;

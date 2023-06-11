@@ -6,8 +6,8 @@ with the following payload
 {
   "username": "yourUsername",
   "transportId": "transportId",
-  "roomReservationId": 0, // id of hotel reservation
-  "ageGroupsSize": { // num of people in each age group
+  "roomReservationId": 0,
+  "ageGroupsSize": {
     "lessThan3YearsOld": 1,
     "lessThan10YearsOld": 0,
     "lessThan18YearsOld": 0,
@@ -46,7 +46,7 @@ To check saga status make a `GET` request on `/api/reservations/v1/read/saga/sta
 - hotelId - string with hotel id to check
 - transportId - string with transport id to check
 
-Example call: `/api/reservations/v1/read/saga/status?hotelId=dupa&transportId=02050f21-7561-4e12-ac59-e3c9b80cbed5`
+Example call: `/api/reservations/v1/read/saga/status?reservationId=9944a45d-0e42-4543-806a-20be761dccf4`
 
 Example response
 ```json

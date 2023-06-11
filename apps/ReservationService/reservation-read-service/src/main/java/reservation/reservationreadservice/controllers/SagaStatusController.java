@@ -20,12 +20,11 @@ public class SagaStatusController {
 
     @GetMapping("/saga/status")
     public ResponseEntity<SagaStatusResponse> getSagaStatus(
-            @RequestParam("hotelId") String hotelId,
-            @RequestParam("transportId") String transportId
+            @RequestParam("reservationId") String reservationId
     ) {
-        log.info("Get status for saga with hotelId: " + hotelId + " transportId: " + transportId);
-        var status = sagaStatusService.getSagaStatus(hotelId, transportId);
-        log.info("Request finished for saga status with hotelId: " + hotelId + " transportId: " + transportId);
+        log.info("Get status for saga with reservation id: " + reservationId);
+        var status = sagaStatusService.getSagaStatus(reservationId);
+        log.info("Request finished for saga status check with reservation id : " + reservationId);
         return ResponseEntity
                 .ok(SagaStatusResponse
                         .builder()
