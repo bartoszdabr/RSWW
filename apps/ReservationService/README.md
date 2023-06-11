@@ -6,8 +6,8 @@ with the following payload
 {
   "username": "yourUsername",
   "transportId": "transportId",
-  "roomReservationId": 0, // id of hotel reservation
-  "ageGroupsSize": { // num of people in each age group
+  "roomReservationId": 0,
+  "ageGroupsSize": {
     "lessThan3YearsOld": 1,
     "lessThan10YearsOld": 0,
     "lessThan18YearsOld": 0,

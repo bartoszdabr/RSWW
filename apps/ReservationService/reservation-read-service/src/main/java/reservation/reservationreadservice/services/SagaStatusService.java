@@ -17,10 +17,12 @@ public class SagaStatusService {
 
     private final ReservationRepository reservationRepository;
 
-    public String getSagaStatus(String hotelId, String transportId) {
-        var status = reservationRepository.findFirstByRoomReservationIdAndTransportIdOrderByTimestampDesc(
-                hotelId, transportId);
+    public String getSagaStatus(String reservationId) {
+        log.info("Checking saga status in db for id: " + reservationId);
+        var status = reservationRepository.findFirstByRoomReservationIdOrderByTimestampDesc(reservationId);
+        log.info("Finished checking saga status in db for id: " + reservationId);
 
-        return status.orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "No reservation for provided ids")).getStatus();
+        return status.orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "No reservation for provided id"))
+                .getStatus();
     }
 }

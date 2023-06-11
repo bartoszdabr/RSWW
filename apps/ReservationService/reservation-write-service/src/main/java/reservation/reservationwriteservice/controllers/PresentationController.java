@@ -33,13 +33,14 @@ public class PresentationController {
     @GetMapping("test/transport")
     public ResponseEntity<Void> testTransportQueueCommunication() {
         log.info("Sending message to " + transportQueueName);
-        rabbitTemplate.convertAndSend(DEFAULT_EXCHANGE_NAME, transportQueueName, "{\n" +
-                "\"id\":\"reservationId\",\n" +
-                "\"transportId\":\"transportId\",\n" +
-                "\"userName\":\"abc\",\n" +
-                "\"numberOfPeople\":2,\n" +
-                "\"type\":\"add\"\n" +
-                "}");
+        rabbitTemplate.convertAndSend(DEFAULT_EXCHANGE_NAME, transportQueueName, """
+                {
+                "id":"reservationId",
+                "transportId":"transportId",
+                "userName":"abc",
+                "numberOfPeople":2,
+                "type":"add"
+                }""");
         log.info("Message to " + transportQueueName + " sent.");
         return ResponseEntity.ok().build();
     }
@@ -47,16 +48,12 @@ public class PresentationController {
     @GetMapping("test/payment")
     public ResponseEntity<Void> testPaymentQueueCommunication() {
         log.info("Sending message to " + transportQueueName);
-        rabbitTemplate.convertAndSend(DEFAULT_EXCHANGE_NAME, paymentQueueName, "{\n" +
-                "\"Guid\":\"reservationId\",\n" +
-                "\"Username\":\"abc\",\n" +
-                "\"IdReservationRoom\":\"roomReservationId\",\n" +
-                "\"Osoby\": {" +
-                    "\"DoLat3\": 1," +
-                    "\"DoLat10\": 2," +
-                    "\"DoLat18\": 0," +
-                    "\"Dorosli\": 2" +
-                "}}");
+        rabbitTemplate.convertAndSend(DEFAULT_EXCHANGE_NAME, paymentQueueName, """
+                {
+                "Guid":"reservationId",
+                "Username":"abc",
+                "IdReservationRoom":"roomReservationId",
+                "Osoby": {"DoLat3": 1,"DoLat10": 2,"DoLat18": 0,"Dorosli": 2}}""");
         log.info("Message to " + paymentQueueName + " sent.");
         return ResponseEntity.ok().build();
     }
@@ -64,11 +61,12 @@ public class PresentationController {
     @GetMapping("test/hotel")
     public ResponseEntity<Void> testHotelQueueCommunication() {
         log.info("Sending message to " + hotelQueueName);
-        rabbitTemplate.convertAndSend(DEFAULT_EXCHANGE_NAME, hotelQueueName, "{\n" +
-                "\"id\":\"reservationId\",\n" +
-                "\"userName\":\"abc\",\n" +
-                "\"cost\":2,\n" +
-                "}");
+        rabbitTemplate.convertAndSend(DEFAULT_EXCHANGE_NAME, hotelQueueName, """
+                {
+                "id":"reservationId",
+                "userName":"abc",
+                "cost":2,
+                }""");
         log.info("Message to " + hotelQueueName + " sent.");
         return ResponseEntity.ok().build();
     }

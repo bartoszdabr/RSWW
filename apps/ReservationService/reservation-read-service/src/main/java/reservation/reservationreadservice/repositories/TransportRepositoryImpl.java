@@ -3,7 +3,6 @@ package reservation.reservationreadservice.repositories;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.util.Pair;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.client.RestTemplate;
@@ -13,11 +12,7 @@ import reservation.reservationreadservice.models.HotelOfferModel;
 import reservation.reservationreadservice.models.TransportResponseModel;
 
 import java.net.URI;
-import java.util.AbstractMap;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Stream;
 
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 

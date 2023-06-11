@@ -75,9 +75,7 @@ public class SagaService {
                 updateAfterHotelConfirmation(originalEvent);
                 initTransportStep(originalEvent);
             }
-            case HOTEL_CONFIRMED -> {
-                updateAfterTransportConfirmation(originalEvent);
-            }
+            case HOTEL_CONFIRMED -> updateAfterTransportConfirmation(originalEvent);
             case TRANSPORT_CONFIRMED -> updateAfterPaymentConfirmation(originalEvent);
             default -> throw new StatusNotKnownException("Not known status for event");
         }
