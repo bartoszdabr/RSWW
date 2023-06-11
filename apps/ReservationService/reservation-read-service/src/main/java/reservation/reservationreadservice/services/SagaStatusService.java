@@ -19,7 +19,7 @@ public class SagaStatusService {
 
     public String getSagaStatus(String reservationId) {
         log.info("Checking saga status in db for id: " + reservationId);
-        var status = reservationRepository.findFirstByRoomReservationIdOrderByTimestampDesc(reservationId);
+        var status = reservationRepository.findFirstByIdOrderByTimestampDesc(reservationId);
         log.info("Finished checking saga status in db for id: " + reservationId);
 
         return status.orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "No reservation for provided id"))

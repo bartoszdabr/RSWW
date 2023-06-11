@@ -20,7 +20,7 @@ public class SagaStatusController {
 
     @GetMapping("/saga/status")
     public ResponseEntity<SagaStatusResponse> getSagaStatus(
-            @RequestParam("hotelId") String reservationId
+            @RequestParam("reservationId") String reservationId
     ) {
         log.info("Get status for saga with reservation id: " + reservationId);
         var status = sagaStatusService.getSagaStatus(reservationId);
