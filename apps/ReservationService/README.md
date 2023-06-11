@@ -46,7 +46,7 @@ To check saga status make a `GET` request on `/api/reservations/v1/read/saga/sta
 - hotelId - string with hotel id to check
 - transportId - string with transport id to check
 
-Example call: `/api/reservations/v1/read/saga/status?hotelId=dupa&transportId=02050f21-7561-4e12-ac59-e3c9b80cbed5`
+Example call: `/api/reservations/v1/read/saga/status?reservationId=9944a45d-0e42-4543-806a-20be761dccf4`
 
 Example response
 ```json
