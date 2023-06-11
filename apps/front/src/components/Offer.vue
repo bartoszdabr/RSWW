@@ -28,7 +28,7 @@
       </div>
       <div class="button-group mt-4">
         <button class="btn btn-primary" @click="showOfferHistory">Show Offer History</button>
-        <button class="btn btn-success" @click="orderOffer">Order Offer</button>
+        <button class="btn btn-success" @click="reserveOffer">Reserve Offer</button>
       </div>
       <div>
         <h1 v-if="purchaseMessage">{{ purchaseMessage }}</h1>
@@ -36,6 +36,17 @@
       <div>
         <h1 v-if="reservationStatus">{{ reservationStatus }}</h1>
       </div>
+
+      <div v-if="timerRunning">
+        <div class="progress mt-4">
+          <div class="progress-bar" role="progressbar" :style="{ width: progress + '%' }" :aria-valuenow="progress"
+            aria-valuemin="0" aria-valuemax="100">
+          </div>
+        </div>
+          <h2 class="mt-4">{{ minutes }}:{{ seconds }}</h2>
+          <button class="btn btn-primary mt-4" @click="onBuyButtonClick" v-if="hotelConfirmed && transportConfirmed">Buy</button>
+      </div>
+
     </div>
     <div class="col">
       <h2>Hotel Data</h2>
@@ -64,7 +75,6 @@
 <script>
 import {getBackendUrl} from './utils.js';
 import axios from 'axios';
-import { v4 as uuidv4 } from 'uuid';
 
 export default {
   data() {
@@ -89,7 +99,12 @@ export default {
         peoples: {},
         fromDate: '2000-01-01',
         toDate: '2000-01-02',
-        sagaInterval: null
+        sagaInterval: null,
+        reservationId: '',
+        hotelConfirmed: false,
+        transportConfirmed: false,
+        timerInterval: null,
+        timerRunning: false
     }
   },
   mounted() {
@@ -112,7 +127,7 @@ export default {
     }, 2000);
     this.purchaseCallInterval = setInterval(() => {
       this.lookForNewPurchase();
-    }, 1000);
+    }, 1000000);
   },
   beforeDestroy() {
     clearInterval(this.hotelCallInterval);
@@ -189,7 +204,7 @@ export default {
     showOfferHistory() {
       this.$router.push({ name: 'OfferHistory', query: { hotelId: this.hotelId, transportId: this.transportId} });
     },
-    orderOffer() {
+    reserveOffer() {
 
       const startDateObj = new Date(this.fromDate);
       const endDateObj = new Date(this.toDate);
@@ -219,7 +234,11 @@ export default {
       axios.post(apiUrl, requestBody)
       .then(response => {
         console.log('success');
+        this.hotelConfirmed = false;
+        this.transportConfirmed = false;
+        this.reservationId = response.data.reservationId;
         this.reservationStatus = 'Start of a new offer reservation.';
+        this.startCountdown();
         this.sagaInterval = setInterval(() => {
           this.checkReservationStatus();
           }, 500);
@@ -231,22 +250,28 @@ export default {
       });
     },
     checkReservationStatus() {
-      const url = `${getBackendUrl()}/api/reservations/v1/read/saga/status?hotelId=${this.hotelId}&transportId=${this.transportId}`;
+      const url = `${getBackendUrl()}/api/reservations/v1/read/saga/status?reservationId=${this.reservationId}`;
+
       axios.get(url)
         .then(response => {
           const status = response.data.status;
           if (status == 'NEW') {
             this.reservationStatus = 'Start of a new offer reservation.';
           } else if (status == 'HOTEL_CONFIRMED') {
+            this.hotelConfirmed = true;
             this.reservationStatus = 'Hotel was confirmed.'
           } else if (status == 'TRANSPORT_CONFIRMED') {
+            this.transportConfirmed = true;
             this.reservationStatus = 'Transport was confirmed.'
           } else if (status == 'RESERVED') {
-            this.reservationStatus = 'Happy vacations. Offer was sucesfully purchased.'
-            clearInterval(this.sagaInterval);
+            this.reservationStatus = 'Offer was sucesfully reserved.'
           } else if (status == 'REMOVED') {
-            this.reservationStatus = 'Unfortunately given offer could not be booked.'
+            this.reservationStatus = 'Unfortunately given offer was not booked.'
+          }
+
+          if (status == 'REMOVED' || status == 'RESERVED') {
             clearInterval(this.sagaInterval);
+            this.stopTimer();
           }
         })
         .catch(error => {
@@ -254,6 +279,43 @@ export default {
           clearInterval(this.sagaInterval);
           this.reservationStatus = 'Unfortunately given offer could not be booked.'
         });
+    },
+    makePayment() {
+      const apiUrl = `${getBackendUrl()}/api/reservations/v1/write/payment`;
+
+      const requestBody =  {
+        reservationId: this.reservationId
+      }
+
+      axios.post(apiUrl, requestBody)
+      .then(response => {
+        this.reservationStatus = 'Payment was successful.'
+        }
+      )
+      .catch(error => {
+        this.reservationStatus = 'An error occurred during payment. Please try again.';
+        console.error(error);
+      });
+    },
+    startCountdown() {
+      let totalTime = 59;
+      let currentTime = totalTime;
+      this.timerRunning = true;
+
+      this.timerInterval = setInterval(() => {
+        if (currentTime > 0) {
+          currentTime--;
+          this.progress = (currentTime / totalTime) * 100;
+          this.minutes = Math.floor(currentTime / 60);
+          this.seconds = currentTime % 60;
+          } else {
+            this.stopTimer();
+          }
+        }, 1000);
+      },
+    stopTimer() {
+      this.timerRunning = false;
+      clearInterval(this.timerInterval);
     }
   }
 }
