@@ -45,7 +45,7 @@
             aria-valuemin="0" aria-valuemax="100">
           </div>
         </div>
-          <button class="btn btn-primary mt-4" @click="makePayment" v-if="hotelConfirmed && transportConfirmed">Buy</button>
+          <button class="btn btn-primary mt-4" @click="makePayment" v-if="transportConfirmed">Buy</button>
       </div>
 
     </div>
@@ -102,7 +102,6 @@ export default {
         toDate: '2000-01-02',
         sagaInterval: null,
         reservationId: '',
-        hotelConfirmed: false,
         transportConfirmed: false,
         timerInterval: null,
         timerRunning: false,
@@ -238,7 +237,6 @@ export default {
       axios.post(apiUrl, requestBody)
       .then(response => {
         console.log('success');
-        this.hotelConfirmed = false;
         this.transportConfirmed = false;
         this.reservationId = response.data.reservationId;
         this.reservationStatus = 'Start of a new offer reservation.';
@@ -262,7 +260,6 @@ export default {
           if (status == 'NEW') {
             this.reservationStatus = 'Start of a new offer reservation.';
           } else if (status == 'HOTEL_CONFIRMED') {
-            this.hotelConfirmed = true;
             this.reservationStatus = 'Hotel was confirmed.'
           } else if (status == 'TRANSPORT_CONFIRMED') {
             this.transportConfirmed = true;
